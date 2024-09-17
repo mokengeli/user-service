@@ -1,0 +1,21 @@
+server:
+  port: 8080             # Port par défaut du serveur
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_service_db
+    username: user1
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:                                      # Hibernate crée/mettre à jour les tables automatiquement
+    show-sql: true                                          # Affiche les requêtes SQL générées dans la console
+    properties:
+      hibernate:
+        default_schema: user_service_schema                 # Spécifie le schéma PostgreSQL à utiliser
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+
