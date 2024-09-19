@@ -1,11 +1,10 @@
 package com.bacos.mokengeli.biloko.infrastructure.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -34,6 +33,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "employee_number", nullable = false, unique = true)
+    private String employeeNumber;
+
     @Column(nullable = false)
     private String password;
 
@@ -53,12 +55,15 @@ public class User {
     private Tenant tenant;
 
     // Relation Many-to-Many avec les Rôles via UserRole
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonManagedReference  // Indique le point de départ de la sérialisation
+    @EqualsAndHashCode.Exclude  // Exclut du hashCode et equals
+    @ToString.Exclude  // Exclut du toString()
     private Set<Role> roles;
 
 

@@ -1,5 +1,5 @@
 server:
-  port: 8080             # Port par défaut du serveur
+  port: 0             # Port par défaut du serveur
 
 spring:
   application:
@@ -16,6 +16,15 @@ spring:
       hibernate:
         default_schema: user_service_schema                 # Spécifie le schéma PostgreSQL à utiliser
         dialect: org.hibernate.dialect.PostgreSQLDialect
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # URL du serveur Eureka
+    fetch-registry: true  # Le client doit récupérer les services
+    register-with-eureka: true  # Le client s'enregistre dans le registre
+  instance:
+    prefer-ip-address: true  # Utilise l'adresse IP pour l'enregistrement (utile pour les environnements containerisés)
+
 
 
 

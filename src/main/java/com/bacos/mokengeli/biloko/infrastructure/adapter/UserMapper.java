@@ -1,9 +1,16 @@
 package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
 
-import com.bacos.mokengeli.biloko.domain.model.DomainUser;
+import com.bacos.mokengeli.biloko.application.model.DomainUser;
 import com.bacos.mokengeli.biloko.infrastructure.model.User;
+import com.bacos.mokengeli.biloko.infrastructure.model.Role;
+import com.bacos.mokengeli.biloko.infrastructure.model.Permission;
+
 import lombok.experimental.UtilityClass;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class UserMapper {
@@ -12,9 +19,38 @@ public class UserMapper {
         if (user == null) {
             return null;
         }
-        return DomainUser.builder().id(user.getId()).firstName(user.getFirstName()).lastName(user.getLastName())
-                .email(user.getEmail()).createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt()).build();
+
+        // Transformer les rôles en List<String>
+        List<String> roles = user.getRoles() != null ?
+                user.getRoles().stream()
+                        .map(Role::getRoleName)
+                        .collect(Collectors.toList()) :
+                new ArrayList<>();
+
+        // Transformer les permissions en List<String>
+        List<String> permissions = user.getRoles() != null ?
+                user.getRoles().stream()
+                        .flatMap(role -> role.getPermissions().stream())
+                        .map(Permission::getPermissionName)
+                        .distinct()
+                        .collect(Collectors.toList()) :
+                new ArrayList<>();
+
+        // Construire l'objet DomainUser
+        return DomainUser.builder()
+                .id(user.getId())
+                .tenantId(user.getTenant().getId()) // Si la relation tenant est présente dans User
+                .employeeNumber(user.getEmployeeNumber())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .postName(user.getPostName())  // Si postName est présent dans User
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .roles(roles)
+                .permissions(permissions)
+                .build();
     }
 
     public User toUser(final DomainUser domainUser) {
@@ -23,7 +59,7 @@ public class UserMapper {
         }
 
         return User.builder().id(domainUser.getId()).firstName(domainUser.getFirstName())
-                .email(domainUser.getEmail()).lastName(domainUser.getLastName())
+                .email(domainUser.getEmail()).employeeNumber(domainUser.getEmployeeNumber()).lastName(domainUser.getLastName())
                 .postName(domainUser.getPostName()).build();
     }
 }

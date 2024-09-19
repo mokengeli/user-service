@@ -1,9 +1,9 @@
 package com.bacos.mokengeli.biloko.infrastructure.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -30,5 +30,8 @@ public class Permission {
 
     // Relation Many-to-Many avec Roles
     @ManyToMany(mappedBy = "permissions")  // Référence à la relation définie dans Role
+    @JsonBackReference  // Empêche la sérialisation récursive
+    @EqualsAndHashCode.Exclude  // Exclut du hashCode et equals
+    @ToString.Exclude  // Exclut du toString()
     private Set<Role> roles;
 }
