@@ -27,7 +27,7 @@ CREATE TABLE user_service_schema.users (
 -- Table des rôles (roles)
 CREATE TABLE user_service_schema.roles (
                                            id SERIAL PRIMARY KEY,
-                                           role_name VARCHAR(50) NOT NULL UNIQUE,  -- Nom du rôle (ex: 'admin', 'serveur')
+                                           label VARCHAR(50) NOT NULL UNIQUE,  -- Nom du rôle (ex: 'admin', 'serveur')
                                            description TEXT,                       -- Description du rôle
                                            created_at TIMESTAMP
 );
@@ -36,14 +36,13 @@ CREATE TABLE user_service_schema.roles (
 CREATE TABLE user_service_schema.user_roles (
                                                 user_id INT NOT NULL,                  -- Identifiant de l'utilisateur
                                                 role_id INT NOT NULL,                  -- Identifiant du rôle
-                                                assigned_at TIMESTAMP,
                                                 PRIMARY KEY (user_id, role_id)         -- Clé primaire composite
 );
 
 -- Table des permissions (permissions)
 CREATE TABLE user_service_schema.permissions (
                                                  id SERIAL PRIMARY KEY,
-                                                 permission_name VARCHAR(100) NOT NULL UNIQUE,  -- Nom de la permission (ex: 'create_order', 'view_stock')
+                                                 label VARCHAR(100) NOT NULL UNIQUE,  -- Nom de la permission (ex: 'create_order', 'view_stock')
                                                  description TEXT,                              -- Description de la permission
                                                  created_at TIMESTAMP
 );
@@ -52,7 +51,6 @@ CREATE TABLE user_service_schema.permissions (
 CREATE TABLE user_service_schema.role_permissions (
                                                       role_id INT NOT NULL,                  -- Identifiant du rôle
                                                       permission_id INT NOT NULL,            -- Identifiant de la permission
-                                                      assigned_at TIMESTAMP ,
                                                       PRIMARY KEY (role_id, permission_id)   -- Clé primaire composite
 );
 

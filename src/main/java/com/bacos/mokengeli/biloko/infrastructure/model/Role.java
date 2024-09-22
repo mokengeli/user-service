@@ -1,13 +1,11 @@
 package com.bacos.mokengeli.biloko.infrastructure.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -20,8 +18,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "role_name", nullable = false, unique = true)
-    private String roleName;  // Nom du rôle (ex: 'admin', 'serveur')
+    @Column( nullable = false, unique = true)
+    private String label;  // Nom du rôle (ex: 'admin', 'serveur')
 
     private String description;  // Description du rôle
 

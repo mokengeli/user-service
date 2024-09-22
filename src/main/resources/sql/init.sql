@@ -2,58 +2,42 @@ INSERT INTO user_service_schema.tenants
 ("name", address, email, created_at)
 VALUES('Tenant 1', 'xxx', 'esq@fss.com', '2024-09-18');
 
+-- Insertion de rôles dans la table roles
+INSERT INTO user_service_schema.roles (label, description, created_at)
+VALUES ('ROLE_ADMIN', 'Administrateur du système', CURRENT_TIMESTAMP),
+       ('ROLE_USER', 'Utilisateur standard', CURRENT_TIMESTAMP),
+       ('ROLE_MANAGER', 'Responsable du lounge/restaurant', CURRENT_TIMESTAMP),
+       ('ROLE_SERVER', 'Serveur dans le lounge/restaurant', CURRENT_TIMESTAMP);
+-- Insertion de permissions dans la table permissions
+INSERT INTO user_service_schema.permissions (label, description, created_at)
+VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP),
+       ('VIEW_INVENTORY', 'Permission de visualiser les stocks', CURRENT_TIMESTAMP),
+       ('EDIT_INVENTORY', 'Permission de modifier les stocks', CURRENT_TIMESTAMP),
+       ('DELETE_ORDER', 'Permission de supprimer des commandes', CURRENT_TIMESTAMP),
+       ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP);
+-- Association des rôles et permissions dans la table role_permissions
+INSERT INTO user_service_schema.role_permissions (role_id, permission_id)
+VALUES
+    -- Permissions pour le rôle ADMIN
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_ORDER')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'DELETE_ORDER')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_REPORTS')),
 
--- Insertion des rôles de base dans le schéma user_service_schema
-INSERT INTO user_service_schema.roles (role_name, description, created_at) VALUES
-                                                                               ('Administrator', 'Gère l''ensemble des fonctionnalités du système', NOW()),
-                                                                               ('Waiter', 'Gère les commandes des clients', NOW()),
-                                                                               ('Manager', 'Supervise les serveurs et gère l''inventaire', NOW()),
-                                                                               ('Customer', 'Utilisateur ayant accès aux fonctionnalités client', NOW()),
-                                                                               ('Supervisor', 'Supervise les managers et les opérations globales', NOW());
+    -- Permissions pour le rôle USER
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_USER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
 
--- Insertion des permissions de base dans le schéma user_service_schema
-INSERT INTO user_service_schema.permissions (permission_name, description, created_at) VALUES
-                                                                                           ('create_user', 'Autorisation de créer un utilisateur', NOW()),
-                                                                                           ('update_user', 'Autorisation de modifier un utilisateur', NOW()),
-                                                                                           ('delete_user', 'Autorisation de supprimer un utilisateur', NOW()),
-                                                                                           ('view_user', 'Autorisation de voir les informations d''un utilisateur', NOW()),
-                                                                                           ('create_order', 'Autorisation de créer une commande', NOW()),
-                                                                                           ('view_order', 'Autorisation de voir une commande', NOW()),
-                                                                                           ('update_order', 'Autorisation de modifier une commande', NOW()),
-                                                                                           ('delete_order', 'Autorisation de supprimer une commande', NOW()),
-                                                                                           ('manage_inventory', 'Autorisation de gérer l''inventaire', NOW());
+    -- Permissions pour le rôle MANAGER
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_REPORTS')),
 
-
--- Administrator : Toutes les permissions
-INSERT INTO user_service_schema.role_permissions (role_id, permission_id, assigned_at)
-SELECT r.id, p.id, NOW()
-FROM user_service_schema.roles r, user_service_schema.permissions p
-WHERE r.role_name = 'Administrator';
-
--- Waiter : Créer et voir des commandes
-INSERT INTO user_service_schema.role_permissions (role_id, permission_id, assigned_at)
-SELECT r.id, p.id, NOW()
-FROM user_service_schema.roles r, user_service_schema.permissions p
-WHERE r.role_name = 'Waiter'
-  AND p.permission_name IN ('create_order', 'view_order');
-
--- Manager : Gérer l'inventaire, voir et gérer les commandes
-INSERT INTO user_service_schema.role_permissions (role_id, permission_id, assigned_at)
-SELECT r.id, p.id, NOW()
-FROM user_service_schema.roles r, user_service_schema.permissions p
-WHERE r.role_name = 'Manager'
-  AND p.permission_name IN ('create_order', 'view_order', 'update_order', 'manage_inventory');
-
--- Supervisor : Voir et gérer les utilisateurs et les commandes
-INSERT INTO user_service_schema.role_permissions (role_id, permission_id, assigned_at)
-SELECT r.id, p.id, NOW()
-FROM user_service_schema.roles r, user_service_schema.permissions p
-WHERE r.role_name = 'Supervisor'
-  AND p.permission_name IN ('create_user', 'update_user', 'view_user', 'create_order', 'view_order');
-
--- Customer : Accéder aux fonctionnalités de commande
-INSERT INTO user_service_schema.role_permissions (role_id, permission_id, assigned_at)
-SELECT r.id, p.id, NOW()
-FROM user_service_schema.roles r, user_service_schema.permissions p
-WHERE r.role_name = 'Customer'
-  AND p.permission_name IN ('create_order', 'view_order');
+    -- Permissions pour le rôle SERVER
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_SERVER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_ORDER'));

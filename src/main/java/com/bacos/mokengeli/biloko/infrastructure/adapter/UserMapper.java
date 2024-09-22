@@ -23,7 +23,7 @@ public class UserMapper {
         // Transformer les rôles en List<String>
         List<String> roles = user.getRoles() != null ?
                 user.getRoles().stream()
-                        .map(Role::getRoleName)
+                        .map(Role::getLabel)
                         .collect(Collectors.toList()) :
                 new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class UserMapper {
         List<String> permissions = user.getRoles() != null ?
                 user.getRoles().stream()
                         .flatMap(role -> role.getPermissions().stream())
-                        .map(Permission::getPermissionName)
+                        .map(Permission::getLabel)
                         .distinct()
                         .collect(Collectors.toList()) :
                 new ArrayList<>();

@@ -1,12 +1,10 @@
 package com.bacos.mokengeli.biloko.infrastructure.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -20,8 +18,8 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "permission_name", nullable = false, unique = true)
-    private String permissionName;  // Nom de la permission (ex: 'create_order')
+    @Column( nullable = false, unique = true)
+    private String label;  // Nom de la permission (ex: 'create_order')
 
     private String description;  // Description de la permission
 
