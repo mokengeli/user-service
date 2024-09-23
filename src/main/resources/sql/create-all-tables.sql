@@ -3,6 +3,7 @@ CREATE SCHEMA user_service_schema;
 -- Table des tenants (tenants)
 CREATE TABLE user_service_schema.tenants (
                                              id SERIAL PRIMARY KEY,
+                                             code VARCHAR(255) NOT NULL UNIQUE,
                                              name VARCHAR(100) NOT NULL UNIQUE,  -- Nom du client (ex. 'Restaurant A', 'Lounge B')
                                              address TEXT,                       -- Adresse du client
                                              email VARCHAR(100),                 -- Email du client

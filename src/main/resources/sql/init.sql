@@ -1,6 +1,6 @@
 INSERT INTO user_service_schema.tenants
-("name", address, email, created_at)
-VALUES('Tenant 1', 'xxx', 'esq@fss.com', '2024-09-18');
+(name, code, address, email, created_at)
+VALUES('Tenant 1', 'T1','xxx', 'esq@fss.com', '2024-09-18');
 
 -- Insertion de rôles dans la table roles
 INSERT INTO user_service_schema.roles (label, description, created_at)

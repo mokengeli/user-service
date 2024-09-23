@@ -20,8 +20,12 @@ public class Tenant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @Column(nullable = false, unique = true)
     private String name;  // Nom du tenant (restaurant/lounge)
+
+    @Column(nullable = false, unique = true)
+    private String code;
 
     private String address;  // Adresse du tenant
 
