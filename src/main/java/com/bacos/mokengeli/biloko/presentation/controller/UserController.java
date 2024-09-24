@@ -25,25 +25,7 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(domainUser));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DomainUser> updateUser(@PathVariable Long id, @RequestBody DomainUser domainUser) {
-        return ResponseEntity.ok(userService.updateUser(id, domainUser));
-    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/by-email")
-    public DomainUser getUserByEmail(@RequestParam("email") String email) {
-        try {
-            return this.userService.getUserByEmail(email);
-        } catch (UserServiceException e) {
-            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
-        }
-    }
 
     @GetMapping("/by-username")
     public DomainUser getUserByEmployeeNumber(@RequestParam("username") String username) {

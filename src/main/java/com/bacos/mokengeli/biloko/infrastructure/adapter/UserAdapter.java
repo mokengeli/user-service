@@ -59,32 +59,6 @@ public class UserAdapter implements UserPort {
     }
 
     @Override
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    @Override
-    public Optional<DomainUser> findById(Long id) {
-        Optional<User> optUser = userRepository.findById(id);
-        if (optUser.isPresent()) {
-            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Aucun utilisateur trouvé avec l'id = " + id);
-        }
-        User user = optUser.get();
-        DomainUser domainUser = UserMapper.toDomain(user);
-        return Optional.of(domainUser);
-    }
-
-    @Override
-    public Optional<DomainUser> getUserByEmail(String email) {
-        Optional<User> optUser = this.userRepository.findByEmail(email);
-        if (optUser.isEmpty()) {
-            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Aucun utilisateur trouvé avec l'email = " + email);
-        }
-        User user = optUser.get();
-        return Optional.of(UserMapper.toDomain(user));
-    }
-
-    @Override
     public Optional<DomainUser> getUserByEmployeeNumber(String employeeNumber) {
         Optional<User> optUser = this.userRepository.findByEmployeeNumber(employeeNumber);
         if (optUser.isEmpty()) {
