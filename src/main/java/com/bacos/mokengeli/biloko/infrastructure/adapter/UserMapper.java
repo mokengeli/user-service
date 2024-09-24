@@ -39,7 +39,8 @@ public class UserMapper {
         // Construire l'objet DomainUser
         return DomainUser.builder()
                 .id(user.getId())
-                .tenantId(user.getTenant().getId()) // Si la relation tenant est présente dans User
+                .tenantId(user.getTenant().getId())
+                .tenantCode(user.getTenant().getCode())
                 .employeeNumber(user.getEmployeeNumber())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
