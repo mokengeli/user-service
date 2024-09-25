@@ -2,17 +2,22 @@ INSERT INTO user_service_schema.tenants
 (name, code, address, email, created_at)
 VALUES('Tenant 1', 'T1','xxx', 'esq@fss.com', '2024-09-18');
 
+INSERT INTO user_service_schema.tenants
+(name, code, address, email, created_at)
+VALUES('Tenant 2', 'T2','xxx', 'tenant2@fssx.com', '2024-09-18');
+
 -- Insertion de rôles dans la table roles
 INSERT INTO user_service_schema.roles (label, description, created_at)
 VALUES ('ROLE_ADMIN', 'Administrateur du système', CURRENT_TIMESTAMP),
        ('ROLE_USER', 'Utilisateur standard', CURRENT_TIMESTAMP),
        ('ROLE_MANAGER', 'Responsable du lounge/restaurant', CURRENT_TIMESTAMP),
+       ('ROLE_WAREHOUSE_OPERATOR', 'Chargé d''inventaire', CURRENT_TIMESTAMP),
        ('ROLE_SERVER', 'Serveur dans le lounge/restaurant', CURRENT_TIMESTAMP);
 -- Insertion de permissions dans la table permissions
 INSERT INTO user_service_schema.permissions (label, description, created_at)
 VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP),
        ('VIEW_INVENTORY', 'Permission de visualiser les stocks', CURRENT_TIMESTAMP),
-       ('EDIT_INVENTORY', 'Permission de modifier les stocks', CURRENT_TIMESTAMP),
+       ('EDIT_INVENTORY', 'Permission de de modifier le stock', CURRENT_TIMESTAMP),
        ('DELETE_ORDER', 'Permission de supprimer des commandes', CURRENT_TIMESTAMP),
        ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP);
 -- Association des rôles et permissions dans la table role_permissions
@@ -38,6 +43,11 @@ VALUES
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_REPORTS')),
 
+-- Permissions pour le rôle USER
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
     -- Permissions pour le rôle SERVER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_SERVER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_ORDER'));
