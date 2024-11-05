@@ -19,7 +19,8 @@ VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP)
        ('VIEW_INVENTORY', 'Permission de visualiser les stocks', CURRENT_TIMESTAMP),
        ('EDIT_INVENTORY', 'Permission de de modifier le stock', CURRENT_TIMESTAMP),
        ('DELETE_ORDER', 'Permission de supprimer des commandes', CURRENT_TIMESTAMP),
-       ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP);
+       ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP),
+       ('REJECT_ORDER_ITEM', 'Permission de rejeter un plat', CURRENT_TIMESTAMP);
 -- Association des rôles et permissions dans la table role_permissions
 INSERT INTO user_service_schema.role_permissions (role_id, permission_id)
 VALUES
