@@ -20,8 +20,10 @@ VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP)
        ('EDIT_INVENTORY', 'Permission de de modifier le stock', CURRENT_TIMESTAMP),
        ('DELETE_ORDER', 'Permission de supprimer des commandes', CURRENT_TIMESTAMP),
        ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP),
-       ('REJECT_ORDER_ITEM', 'Permission de rejeter un plat', CURRENT_TIMESTAMP),
-       ('COOK_DISH', 'Permission de preparer', CURRENT_TIMESTAMP);
+       ('REJECT_DISH', 'Permission de rejeter un plat', CURRENT_TIMESTAMP),
+       ('COOK_DISH', 'Permission de preparer', CURRENT_TIMESTAMP),
+       ('SERVE_DISH', 'Permission de servir', CURRENT_TIMESTAMP),
+       ('REGISTER_PAY_DISH', 'Permission d''enregistrer un paiement', CURRENT_TIMESTAMP);
 -- Association des rôles et permissions dans la table role_permissions
 INSERT INTO user_service_schema.role_permissions (role_id, permission_id)
 VALUES
@@ -36,7 +38,14 @@ VALUES
      (SELECT id FROM user_service_schema.permissions WHERE label = 'DELETE_ORDER')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_REPORTS')),
-
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'REJECT_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'COOK_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'SERVE_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'REGISTER_PAY_DISH')),
     -- Permissions pour le rôle USER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_USER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
