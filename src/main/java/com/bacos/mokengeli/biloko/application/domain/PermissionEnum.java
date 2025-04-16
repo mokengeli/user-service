@@ -1,4 +1,4 @@
-package com.bacos.mokengeli.biloko.application.model;
+package com.bacos.mokengeli.biloko.application.domain;
 
 public enum PermissionEnum {
     CREATE_ORDER("Permission de créer des commandes"),

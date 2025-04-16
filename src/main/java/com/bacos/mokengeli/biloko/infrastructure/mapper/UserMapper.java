@@ -1,7 +1,7 @@
-package com.bacos.mokengeli.biloko.infrastructure.adapter;
+package com.bacos.mokengeli.biloko.infrastructure.mapper;
 
 
-import com.bacos.mokengeli.biloko.application.model.DomainUser;
+import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.infrastructure.model.User;
 import com.bacos.mokengeli.biloko.infrastructure.model.Role;
 import com.bacos.mokengeli.biloko.infrastructure.model.Permission;

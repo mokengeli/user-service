@@ -1,7 +1,7 @@
 package com.bacos.mokengeli.biloko.application.service;
 
-import com.bacos.mokengeli.biloko.application.exception.UserServiceException;
-import com.bacos.mokengeli.biloko.application.model.DomainUser;
+import com.bacos.mokengeli.biloko.application.exception.ServiceException;
+import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,15 +24,15 @@ public class UserService {
     }
 
 
-    public DomainUser getUserByEmployeeNumber(String employeeNumber) throws UserServiceException {
+    public DomainUser getUserByEmployeeNumber(String employeeNumber) throws ServiceException {
         if (employeeNumber == null) {
-            throw new UserServiceException(UUID.randomUUID().toString(), "Le matricule doit etre fourni ");
+            throw new ServiceException(UUID.randomUUID().toString(), "Le matricule doit etre fourni ");
         }
         Optional<DomainUser> optUser = this.userPort.getUserByEmployeeNumber(employeeNumber);
         if (optUser.isPresent()) {
             return optUser.get();
         }
-        throw new UserServiceException(UUID.randomUUID().toString(), "Utilisateur non trouvé");
+        throw new ServiceException(UUID.randomUUID().toString(), "Utilisateur non trouvé");
     }
 
 

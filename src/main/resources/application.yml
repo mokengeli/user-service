@@ -5,11 +5,10 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_service_db
+    url: jdbc:postgresql://localhost:5432/mokengeli_biloko_db
     username: user1
     password: password
     driver-class-name: org.postgresql.Driver
-
   jpa:                                      # Hibernate crée/mettre à jour les tables automatiquement
     show-sql: true                                          # Affiche les requêtes SQL générées dans la console
     properties:
@@ -25,6 +24,14 @@ eureka:
   instance:
     prefer-ip-address: true  # Utilise l'adresse IP pour l'enregistrement (utile pour les environnements containerisés)
 
+security:
+  cors:
+    allowed-origins: http://localhost:3000
+  jwt:
+    secret: 9a4f2c_8d3b7a1e6f#45c8a0b3f268b1d4e6-f3c8a9d2b5f8e3a9c8-b5f6v8a3d9A@
+  is-ssl: false
 
-
+springdoc:
+  api-docs:
+    group: user
 

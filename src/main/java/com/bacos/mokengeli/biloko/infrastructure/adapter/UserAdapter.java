@@ -1,9 +1,10 @@
 package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
 import com.bacos.mokengeli.biloko.application.exception.UserServiceRuntimeException;
-import com.bacos.mokengeli.biloko.application.model.DomainUser;
-import com.bacos.mokengeli.biloko.application.model.RoleEnum;
+import com.bacos.mokengeli.biloko.application.domain.DomainUser;
+import com.bacos.mokengeli.biloko.application.domain.RoleEnum;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
+import com.bacos.mokengeli.biloko.infrastructure.mapper.UserMapper;
 import com.bacos.mokengeli.biloko.infrastructure.model.Role;
 import com.bacos.mokengeli.biloko.infrastructure.model.Tenant;
 import com.bacos.mokengeli.biloko.infrastructure.model.User;

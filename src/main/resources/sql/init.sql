@@ -12,16 +12,20 @@ VALUES ('ROLE_ADMIN', 'Administrateur du système', CURRENT_TIMESTAMP),
        ('ROLE_USER', 'Utilisateur standard', CURRENT_TIMESTAMP),
        ('ROLE_MANAGER', 'Responsable du lounge/restaurant', CURRENT_TIMESTAMP),
        ('ROLE_WAREHOUSE_OPERATOR', 'Chargé d''inventaire', CURRENT_TIMESTAMP),
-       ('ROLE_SERVER', 'Serveur dans le lounge/restaurant', CURRENT_TIMESTAMP);
+       ('ROLE_SERVER', 'Serveur dans le lounge/restaurant', CURRENT_TIMESTAMP),
+       ('ROLE_COOK', 'Cuisinier', CURRENT_TIMESTAMP);
 -- Insertion de permissions dans la table permissions
 INSERT INTO user_service_schema.permissions (label, description, created_at)
 VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP),
        ('VIEW_INVENTORY', 'Permission de visualiser les stocks', CURRENT_TIMESTAMP),
-       ('EDIT_INVENTORY', 'Permission de de modifier le stock', CURRENT_TIMESTAMP),
+       ('EDIT_INVENTORY', 'Permission de modifier le stock', CURRENT_TIMESTAMP),
+       ('ADD_INVENTORY', 'Permission d''ajouter  des elements dans le stock', CURRENT_TIMESTAMP),
+       ('REMOVE_INVENTORY', 'Permission de retirer des elements dans le stock', CURRENT_TIMESTAMP),
        ('DELETE_ORDER', 'Permission de supprimer des commandes', CURRENT_TIMESTAMP),
        ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP),
        ('REJECT_DISH', 'Permission de rejeter un plat', CURRENT_TIMESTAMP),
        ('COOK_DISH', 'Permission de preparer', CURRENT_TIMESTAMP),
+       ('VIEW_TENANT', 'Permission de visualiser les tenants', CURRENT_TIMESTAMP),
        ('SERVE_DISH', 'Permission de servir', CURRENT_TIMESTAMP),
        ('REGISTER_PAY_DISH', 'Permission d''enregistrer un paiement', CURRENT_TIMESTAMP);
 -- Association des rôles et permissions dans la table role_permissions
@@ -46,6 +50,8 @@ VALUES
      (SELECT id FROM user_service_schema.permissions WHERE label = 'SERVE_DISH')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'REGISTER_PAY_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANT')),
     -- Permissions pour le rôle USER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_USER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
@@ -53,12 +59,30 @@ VALUES
     -- Permissions pour le rôle MANAGER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_REPORTS')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANT')),
 
--- Permissions pour le rôle USER
+-- Permissions pour le rôle ROLE_WAREHOUSE_OPERATOR
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
     -- Permissions pour le rôle SERVER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_SERVER'),
-     (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_ORDER'));
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'SERVE_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_SERVER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'REGISTER_PAY_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_SERVER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
+
+-- Permissions pour le rôle ROLE_COOK
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_COOK'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'REMOVE_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_COOK'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_COOK'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'COOK_DISH'));
