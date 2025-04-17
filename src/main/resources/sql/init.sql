@@ -25,9 +25,12 @@ VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP)
        ('VIEW_REPORTS', 'Permission de visualiser les rapports', CURRENT_TIMESTAMP),
        ('REJECT_DISH', 'Permission de rejeter un plat', CURRENT_TIMESTAMP),
        ('COOK_DISH', 'Permission de preparer', CURRENT_TIMESTAMP),
+       ('CREATE_DISH', 'Permission de creer des plats', CURRENT_TIMESTAMP),
        ('VIEW_TENANT', 'Permission de visualiser les tenants', CURRENT_TIMESTAMP),
        ('SERVE_DISH', 'Permission de servir', CURRENT_TIMESTAMP),
-       ('REGISTER_PAY_DISH', 'Permission d''enregistrer un paiement', CURRENT_TIMESTAMP);
+       ('REGISTER_PAY_DISH', 'Permission d''enregistrer un paiement', CURRENT_TIMESTAMP),
+       ('CREATE_MENU_CATEGORY', 'Permission de creer une category pour le menu', CURRENT_TIMESTAMP),
+       ('ASSIGN_MENU_CATEGORY', 'Permission d''ajouter une category du menu à un tenant. ', CURRENT_TIMESTAMP);
 -- Association des rôles et permissions dans la table role_permissions
 INSERT INTO user_service_schema.role_permissions (role_id, permission_id)
 VALUES
@@ -44,6 +47,8 @@ VALUES
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_REPORTS')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'REJECT_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_DISH')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'COOK_DISH')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
@@ -65,6 +70,10 @@ VALUES
      (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANT')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_DISH')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'ASSIGN_MENU_CATEGORY')),
 
 -- Permissions pour le rôle ROLE_WAREHOUSE_OPERATOR
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
