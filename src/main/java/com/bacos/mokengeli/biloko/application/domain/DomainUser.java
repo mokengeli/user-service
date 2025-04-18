@@ -15,6 +15,7 @@ import java.util.List;
 public class DomainUser {
     private Long id;
     private Long tenantId;
+    private String tenantName;
     private String tenantCode;
     private String firstName;
     private String lastName;

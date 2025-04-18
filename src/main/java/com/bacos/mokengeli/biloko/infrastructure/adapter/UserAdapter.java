@@ -13,6 +13,9 @@ import com.bacos.mokengeli.biloko.infrastructure.repository.RoleRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.TenantRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -67,5 +70,13 @@ public class UserAdapter implements UserPort {
         }
         User user = optUser.get();
         return Optional.of(UserMapper.toDomain(user));
+    }
+
+    @Override
+    public Page<DomainUser> findAllUsersByTenant(String tenantCode, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userRepository
+                .findByTenantCode(tenantCode, pageable)
+                .map(UserMapper::toLigthDomain);
     }
 }

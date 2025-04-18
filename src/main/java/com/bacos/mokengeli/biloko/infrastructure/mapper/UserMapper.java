@@ -54,6 +54,33 @@ public class UserMapper {
                 .build();
     }
 
+    public DomainUser toLigthDomain(final User user) {
+        if (user == null) {
+            return null;
+        }
+
+        // Transformer les rôles en List<String>
+        List<String> roles = user.getRoles() != null ?
+                user.getRoles().stream()
+                        .map(Role::getLabel)
+                        .collect(Collectors.toList()) :
+                new ArrayList<>();
+
+
+
+        // Construire l'objet DomainUser
+        return DomainUser.builder()
+                .id(user.getId())
+                .tenantName(user.getTenant().getName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .postName(user.getPostName())  // Si postName est présent dans User
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
+                .roles(roles)
+                .build();
+    }
+
     public User toUser(final DomainUser domainUser) {
         if (domainUser == null) {
             return null;
