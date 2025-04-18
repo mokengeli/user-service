@@ -46,7 +46,6 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .postName(user.getPostName())  // Si postName est présent dans User
                 .email(user.getEmail())
-                .password(user.getPassword())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .roles(roles)

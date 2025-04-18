@@ -39,7 +39,7 @@ public class UserAdapter implements UserPort {
     }
 
     @Override
-    public DomainUser createNewUser(DomainUser domainUser) {
+    public DomainUser createNewUser(DomainUser domainUser, String password) {
         Long tenantId = domainUser.getTenantId();
         Optional<Tenant> optTenant = this.tenantRepository.findById(tenantId);
         if (optTenant.isEmpty()) {
@@ -53,7 +53,7 @@ public class UserAdapter implements UserPort {
         roles.add(role);
         User user = UserMapper.toUser(domainUser);
         user.setStatus(UserStatusEnum.ACTIVE);
-        user.setPassword(domainUser.getPassword());
+        user.setPassword(password);
         user.setTenant(optTenant.get());
         user.setCreatedAt(LocalDateTime.now());
         user.setRoles(roles);

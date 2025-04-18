@@ -24,8 +24,8 @@ public class UserService {
         this.userAppService = userAppService;
     }
 
-    public DomainUser createUser(DomainUser domainUser) {
-        return userPort.createNewUser(domainUser);
+    public DomainUser createUser(DomainUser domainUser, String password) {
+        return userPort.createNewUser(domainUser, password);
     }
 
 

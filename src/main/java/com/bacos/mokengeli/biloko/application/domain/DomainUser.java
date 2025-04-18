@@ -22,7 +22,6 @@ public class DomainUser {
     private String postName;
     private String employeeNumber;
     private String email;
-    private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<String> roles;

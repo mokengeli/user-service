@@ -3,6 +3,7 @@ package com.bacos.mokengeli.biloko.presentation.controller;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.UserService;
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
+import com.bacos.mokengeli.biloko.presentation.controller.model.CreateUserRequest;
 import com.bacos.mokengeli.biloko.presentation.exception.ResponseStatusWrapperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,8 +24,9 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<DomainUser> createUser(@RequestBody DomainUser domainUser) {
-        return ResponseEntity.ok(userService.createUser(domainUser));
+    public ResponseEntity<DomainUser> createUser(@RequestBody CreateUserRequest createUserRequest) {
+
+        return ResponseEntity.ok(userService.createUser(createUserRequest, createUserRequest.getPassword()));
     }
 
 
