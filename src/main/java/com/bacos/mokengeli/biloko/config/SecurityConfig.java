@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/public/**").permitAll()
                         .requestMatchers( "/api/user").permitAll()
-                        .requestMatchers( "/api/user/by-username").permitAll()
+                        //.requestMatchers( "/api/user/by-employee-number").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()  // Toutes les autres routes nécessitent une authentification
                 )

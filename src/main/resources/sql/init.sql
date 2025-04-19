@@ -11,9 +11,8 @@ INSERT INTO user_service_schema.roles (label, description, created_at)
 VALUES ('ROLE_ADMIN', 'Administrateur du système', CURRENT_TIMESTAMP),
        ('ROLE_USER', 'Utilisateur standard', CURRENT_TIMESTAMP),
        ('ROLE_MANAGER', 'Responsable du lounge/restaurant', CURRENT_TIMESTAMP),
-       ('ROLE_WAREHOUSE_OPERATOR', 'Chargé d''inventaire', CURRENT_TIMESTAMP),
        ('ROLE_SERVER', 'Serveur dans le lounge/restaurant', CURRENT_TIMESTAMP),
-       ('ROLE_COOK', 'Cuisinier', CURRENT_TIMESTAMP);
+       ('ROLE_COOK', 'Cuisinier dans le lounge/restaurant', CURRENT_TIMESTAMP);
 -- Insertion de permissions dans la table permissions
 INSERT INTO user_service_schema.permissions (label, description, created_at)
 VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP),
@@ -75,11 +74,7 @@ VALUES
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'ASSIGN_MENU_CATEGORY')),
 
--- Permissions pour le rôle ROLE_WAREHOUSE_OPERATOR
-    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
-     (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
-    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_WAREHOUSE_OPERATOR'),
-     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
+
     -- Permissions pour le rôle SERVER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_SERVER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'SERVE_DISH')),

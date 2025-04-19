@@ -1,5 +1,6 @@
 package com.bacos.mokengeli.biloko.application.service;
 
+import com.bacos.mokengeli.biloko.application.domain.RoleEnum;
 import com.bacos.mokengeli.biloko.application.domain.model.ConnectedUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,26 +20,50 @@ public class UserService {
 
     private final UserPort userPort;
     private final UserAppService userAppService;
+
     @Autowired
     public UserService(UserPort userPort, UserAppService userAppService) {
         this.userPort = userPort;
         this.userAppService = userAppService;
     }
 
-    public DomainUser createUser(DomainUser domainUser, String password) {
-        return userPort.createNewUser(domainUser, password);
+    public DomainUser createUser(DomainUser domainUser, String password) throws ServiceException {
+        // verifier si l'utilisateur a le droit de creer un user
+        boolean adminUser = this.userAppService.isAdminUser();
+        String role = domainUser.getRoles().get(0);
+
+        boolean isManagerAndNotAdminRole = this.userAppService.isManagerUser() && !RoleEnum.ROLE_ADMIN.name().equals(role);
+        if (adminUser || isManagerAndNotAdminRole) {
+            return userPort.createNewUser(domainUser, password);
+        }
+        String employeeNumber = this.userAppService.getConnectedUser().getEmployeeNumber();
+        RoleEnum mainRole = this.userAppService.getMainRole();
+        String uuid = UUID.randomUUID().toString();
+        log.error("[{}]: User [{}] with role {} try to create a user with role {}",
+                uuid, employeeNumber, role, mainRole);
+        throw new ServiceException(uuid, "You don't have the right to create user with this " +
+                " role not authorized");
+
     }
 
 
     public DomainUser getUserByEmployeeNumber(String employeeNumber) throws ServiceException {
+        String employeeNumberOfConnectedUser = this.userAppService.getConnectedUser().getEmployeeNumber();
+
         if (employeeNumber == null) {
-            throw new ServiceException(UUID.randomUUID().toString(), "Le matricule doit etre fourni ");
+            String uuid = UUID.randomUUID().toString();
+            log.error("[{}]: User [{}] try to getUserByEmployeeNumber without giving that need value",
+                    uuid, employeeNumberOfConnectedUser);
+            throw new ServiceException(uuid, "The employee number must be given ");
         }
         Optional<DomainUser> optUser = this.userPort.getUserByEmployeeNumber(employeeNumber);
         if (optUser.isPresent()) {
             return optUser.get();
         }
-        throw new ServiceException(UUID.randomUUID().toString(), "Utilisateur non trouvé");
+        String uuid = UUID.randomUUID().toString();
+        log.error("[{}]: User [{}]. No User  found with employee number {}",
+                uuid, employeeNumberOfConnectedUser, employeeNumber);
+        throw new ServiceException(UUID.randomUUID().toString(), "User not found with employee number " + employeeNumber);
     }
 
     public Page<DomainUser> getAllUsers(String tenantCode, int page, int size) throws ServiceException {
@@ -50,5 +76,21 @@ public class UserService {
         return userPort.findAllUsersByTenant(tenantCode, page, size);
     }
 
+    public List<String> getAuthorizedRoleByUserProfile() throws ServiceException {
+        List<String> allRoles = this.userPort.getAllRoles();
+        return getAuthorizedRoleByUserProfile(allRoles);
+    }
 
+    private List<String> getAuthorizedRoleByUserProfile(List<String> allRoles) {
+
+        if (this.userAppService.isAdminUser()) {
+            return allRoles;
+        }
+        if (this.userAppService.isManagerUser()) {
+            return allRoles.stream().filter(f -> !f.equals(RoleEnum.ROLE_ADMIN.name()))
+                    .toList();
+        }
+        RoleEnum mainRole = this.userAppService.getMainRole();
+        return List.of(mainRole.name());
+    }
 }

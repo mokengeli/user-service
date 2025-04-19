@@ -17,7 +17,7 @@ CREATE TABLE user_service_schema.users (
                                            first_name VARCHAR(100) NOT NULL,   -- Prénom de l'utilisateur
                                            last_name VARCHAR(100) NOT NULL,    -- Nom de famille
                                            post_name VARCHAR(100),             -- Post-nom (utilisé dans les noms congolais)
-                                           email VARCHAR(150) NOT NULL UNIQUE, -- Email de l'utilisateur
+                                           email VARCHAR(150) UNIQUE, -- Email de l'utilisateur
                                            employee_number VARCHAR(200) NOT NULL UNIQUE, -- Matricule de l'utilisateur
                                            password VARCHAR(255) NOT NULL,
                                            status VARCHAR(20) DEFAULT 'active',-- Statut de l'utilisateur (ex: 'active', 'inactive')

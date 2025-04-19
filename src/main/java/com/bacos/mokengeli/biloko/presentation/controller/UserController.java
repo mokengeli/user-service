@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -25,15 +27,18 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<DomainUser> createUser(@RequestBody CreateUserRequest createUserRequest) {
-
-        return ResponseEntity.ok(userService.createUser(createUserRequest, createUserRequest.getPassword()));
+        try {
+            return ResponseEntity.ok(userService.createUser(createUserRequest, createUserRequest.getPassword()));
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
     }
 
 
-    @GetMapping("/by-username")
-    public DomainUser getUserByEmployeeNumber(@RequestParam("username") String username) {
+    @GetMapping("/by-employee-number")
+    public DomainUser getUserByEmployeeNumber(@RequestParam("employeeNumber") String employeeNumber) {
         try {
-            return this.userService.getUserByEmployeeNumber(username);
+            return this.userService.getUserByEmployeeNumber(employeeNumber);
         } catch (ServiceException e) {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
@@ -51,4 +56,22 @@ public class UserController {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
     }
+
+    /**
+     * return the role an user can see respecting a hierarchy
+     * according to his own ^profile
+     *
+     * @return
+     */
+    @GetMapping("/roles")
+    public ResponseEntity<List<String>> getAuthorizedRoleByUserProfile() {
+        try {
+            List<String> roles = userService.getAuthorizedRoleByUserProfile();
+            return ResponseEntity.ok(roles);
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
+
+
 }

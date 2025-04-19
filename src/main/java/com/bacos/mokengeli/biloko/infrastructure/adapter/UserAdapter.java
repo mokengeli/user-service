@@ -19,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class UserAdapter implements UserPort {
@@ -40,21 +37,26 @@ public class UserAdapter implements UserPort {
 
     @Override
     public DomainUser createNewUser(DomainUser domainUser, String password) {
-        Long tenantId = domainUser.getTenantId();
-        Optional<Tenant> optTenant = this.tenantRepository.findById(tenantId);
-        if (optTenant.isEmpty()) {
-            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Aucune entrerprise trouvée avec le tenantId = " + tenantId);
+        String tenantCode = domainUser.getTenantCode();
+        Tenant tenant = this.tenantRepository.findByCode(tenantCode);
+        if (tenant == null) {
+            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Aucune entrerprise trouvée avec le tenantCode = " + tenantCode);
         }
-        Role role = this.roleRepository.findByLabel(RoleEnum.ROLE_USER.name())
+        List<String> UserRoles = domainUser.getRoles();
+        if (UserRoles.isEmpty()) {
+            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Aucun role fourni");
+        }
+
+        Role role = this.roleRepository.findByLabel(UserRoles.get(0))
                 .orElseThrow(() ->
-                        new UserServiceRuntimeException(UUID.randomUUID().toString(), "le Role_USER n'existe pas ")
+                        new UserServiceRuntimeException(UUID.randomUUID().toString(), "le rôle " + UserRoles.get(0) + " n'existe pas ")
                 );
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         User user = UserMapper.toUser(domainUser);
         user.setStatus(UserStatusEnum.ACTIVE);
         user.setPassword(password);
-        user.setTenant(optTenant.get());
+        user.setTenant(tenant);
         user.setCreatedAt(LocalDateTime.now());
         user.setRoles(roles);
         user.setEmployeeNumber(UUID.randomUUID().toString());
@@ -78,5 +80,11 @@ public class UserAdapter implements UserPort {
         return userRepository
                 .findByTenantCode(tenantCode, pageable)
                 .map(UserMapper::toLigthDomain);
+    }
+
+    @Override
+    public List<String> getAllRoles() {
+        List<Role> all = this.roleRepository.findAll();
+        return all.stream().map(Role::getLabel).toList();
     }
 }
