@@ -25,13 +25,14 @@ VALUES ('CREATE_ORDER', 'Permission de créer des commandes', CURRENT_TIMESTAMP)
        ('REJECT_DISH', 'Permission de rejeter un plat', CURRENT_TIMESTAMP),
        ('COOK_DISH', 'Permission de preparer', CURRENT_TIMESTAMP),
        ('CREATE_DISH', 'Permission de creer des plats', CURRENT_TIMESTAMP),
-       ('VIEW_TENANT', 'Permission de visualiser les tenants', CURRENT_TIMESTAMP),
        ('SERVE_DISH', 'Permission de servir', CURRENT_TIMESTAMP),
        ('REGISTER_PAY_DISH', 'Permission d''enregistrer un paiement', CURRENT_TIMESTAMP),
        ('CREATE_MENU_CATEGORY', 'Permission de creer une category pour le menu', CURRENT_TIMESTAMP),
        ('ASSIGN_MENU_CATEGORY', 'Permission d''ajouter une category du menu à un tenant. ', CURRENT_TIMESTAMP),
        ('CREATE_USER', 'Permission de créer des utilisateurs', CURRENT_TIMESTAMP),
-       ('VIEW_USERS', 'Permission de visualiser les utilisateurs', CURRENT_TIMESTAMP);
+       ('VIEW_USERS', 'Permission de visualiser les utilisateurs', CURRENT_TIMESTAMP),
+       ('VIEW_TENANTS', 'Permission de visualiser les restaurants', CURRENT_TIMESTAMP);
+
 -- Association des rôles et permissions dans la table role_permissions
 INSERT INTO user_service_schema.role_permissions (role_id, permission_id)
 VALUES
@@ -57,11 +58,11 @@ VALUES
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'REGISTER_PAY_DISH')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
-     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANT')),
-    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_USERS')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_USER')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_ADMIN'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANTS')),
     -- Permissions pour le rôle USER
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_USER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_INVENTORY')),
@@ -75,8 +76,6 @@ VALUES
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'EDIT_INVENTORY')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
-     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANT')),
-    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_DISH')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'ASSIGN_MENU_CATEGORY')),
@@ -84,6 +83,8 @@ VALUES
      (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_USERS')),
     ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM user_service_schema.permissions WHERE label = 'CREATE_USER')),
+    ((SELECT id FROM user_service_schema.roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM user_service_schema.permissions WHERE label = 'VIEW_TENANTS')),
 
 
     -- Permissions pour le rôle SERVER

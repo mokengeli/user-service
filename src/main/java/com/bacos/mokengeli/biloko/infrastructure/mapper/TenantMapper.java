@@ -17,6 +17,22 @@ public class TenantMapper {
                 .id(domainTenantContext.getId())
                 .code(domainTenantContext.getCode())
                 .name(domainTenantContext.getName())
+                .email(domainTenantContext.getEmail())
+                .build();
+    }
+
+    public DomainTenant toDomain(Tenant tenantContext) {
+        if (tenantContext == null) {
+            return null;
+        }
+
+        return DomainTenant.builder()
+                .id(tenantContext.getId())
+                .code(tenantContext.getCode())
+                .name(tenantContext.getName())
+                .email(tenantContext.getEmail())
+                .createdAt(tenantContext.getCreatedAt())
+                .updatedAt(tenantContext.getUpdatedAt())
                 .build();
     }
 
@@ -29,6 +45,7 @@ public class TenantMapper {
                 .id(tenantContext.getId())
                 .code(tenantContext.getCode())
                 .name(tenantContext.getName())
+                .email(tenantContext.getEmail())
                 .build();
     }
 }

@@ -6,8 +6,9 @@ CREATE TABLE user_service_schema.tenants (
                                              code VARCHAR(255) NOT NULL UNIQUE,
                                              name VARCHAR(100) NOT NULL UNIQUE,  -- Nom du client (ex. 'Restaurant A', 'Lounge B')
                                              address TEXT,                       -- Adresse du client
-                                             email VARCHAR(100),                 -- Email du client
-                                             created_at TIMESTAMP
+                                             email VARCHAR(100) NOT NULL UNIQUE,                 -- Email du client
+                                             created_at TIMESTAMP NOT NULL,
+                                             updated_at TIMESTAMP
 );
 
 -- Table des utilisateurs (users)

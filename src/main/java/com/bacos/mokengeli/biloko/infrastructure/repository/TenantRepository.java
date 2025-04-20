@@ -10,4 +10,7 @@ import java.util.Optional;
 @Repository
 public interface TenantRepository extends JpaRepository<Tenant, Long> {
     Tenant findByCode(String code);
+    boolean existsByCode(String code);
+    boolean existsByName(String name);
+    boolean existsByEmail(String email);
 }

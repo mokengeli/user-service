@@ -2,10 +2,13 @@ package com.bacos.mokengeli.biloko.presentation.controller;
 
 
 import com.bacos.mokengeli.biloko.application.domain.DomainTenant;
+import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.TenantService;
+import com.bacos.mokengeli.biloko.presentation.controller.model.CreateUserRequest;
 import com.bacos.mokengeli.biloko.presentation.exception.ResponseStatusWrapperException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +27,16 @@ public class TenantController {
         this.tenantService = tenantService;
     }
 
-    @PreAuthorize("hasAuthority('VIEW_TENANT')")
+    @PostMapping
+    public ResponseEntity<DomainTenant> createTenant(@RequestBody DomainTenant domainTenant) {
+        try {
+            return ResponseEntity.ok(tenantService.createTenant(domainTenant));
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('VIEW_TENANTS')")
     @GetMapping("/all")
     public ResponseEntity<List<DomainTenant>> getAllTenants() {
         try {
@@ -35,7 +47,21 @@ public class TenantController {
         }
     }
 
-    @PreAuthorize("hasAuthority('VIEW_TENANT')")
+
+    @PreAuthorize("hasAuthority('VIEW_TENANTS')")
+    @GetMapping("/all/pg")
+    public ResponseEntity<Page<DomainTenant>> getAllTenantsWithPagination(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+        try {
+            Page<DomainTenant> tenants = tenantService.getAllTenants(page, size);
+            return ResponseEntity.ok(tenants);
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('VIEW_TENANTS')")
     @GetMapping("")
     public ResponseEntity<DomainTenant> getTenantsByTenantCode(@RequestParam("code") String tenantCode) {
         try {
