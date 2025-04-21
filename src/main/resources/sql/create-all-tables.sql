@@ -104,3 +104,10 @@ ALTER TABLE user_service_schema.audit_logs
 ALTER TABLE user_service_schema.audit_logs
     ADD CONSTRAINT fk_audit_logs_users
         FOREIGN KEY (user_id) REFERENCES user_service_schema.users(id);
+
+-- creation numero de sequence pour génération de numéro d'employé
+CREATE TABLE tenant_user_sequence (
+                                      tenant_id   BIGINT      PRIMARY KEY,
+                                      last_value  BIGINT      NOT NULL
+);
+

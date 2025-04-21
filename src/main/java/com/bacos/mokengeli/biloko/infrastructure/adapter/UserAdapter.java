@@ -2,16 +2,14 @@ package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
 import com.bacos.mokengeli.biloko.application.exception.UserServiceRuntimeException;
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
-import com.bacos.mokengeli.biloko.application.domain.RoleEnum;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
 import com.bacos.mokengeli.biloko.infrastructure.mapper.UserMapper;
-import com.bacos.mokengeli.biloko.infrastructure.model.Role;
-import com.bacos.mokengeli.biloko.infrastructure.model.Tenant;
-import com.bacos.mokengeli.biloko.infrastructure.model.User;
-import com.bacos.mokengeli.biloko.infrastructure.model.UserStatusEnum;
+import com.bacos.mokengeli.biloko.infrastructure.model.*;
 import com.bacos.mokengeli.biloko.infrastructure.repository.RoleRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.TenantRepository;
+import com.bacos.mokengeli.biloko.infrastructure.repository.TenantUserSequenceRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,20 +19,26 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.*;
 
+
 @Component
 public class UserAdapter implements UserPort {
+    private static final int PADDING = 4;
 
     private final UserRepository userRepository;
     private final TenantRepository tenantRepository;
     private final RoleRepository roleRepository;
+    private final TenantUserSequenceRepository tenantUserSequenceRepository;
 
     @Autowired
-    public UserAdapter(UserRepository userRepository, TenantRepository tenantRepository, RoleRepository roleRepository) {
+    public UserAdapter(UserRepository userRepository, TenantRepository tenantRepository, RoleRepository roleRepository,
+                       TenantUserSequenceRepository tenantUserSequenceRepository) {
         this.userRepository = userRepository;
         this.tenantRepository = tenantRepository;
         this.roleRepository = roleRepository;
+        this.tenantUserSequenceRepository = tenantUserSequenceRepository;
     }
 
+    @Transactional
     @Override
     public DomainUser createNewUser(DomainUser domainUser, String password) {
         String tenantCode = domainUser.getTenantCode();
@@ -51,6 +55,9 @@ public class UserAdapter implements UserPort {
                 .orElseThrow(() ->
                         new UserServiceRuntimeException(UUID.randomUUID().toString(), "le rôle " + UserRoles.get(0) + " n'existe pas ")
                 );
+
+
+        String employeeNumber = createEmployeeNumber(tenant.getId(), tenantCode);
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         User user = UserMapper.toUser(domainUser);
@@ -59,9 +66,33 @@ public class UserAdapter implements UserPort {
         user.setTenant(tenant);
         user.setCreatedAt(LocalDateTime.now());
         user.setRoles(roles);
-        user.setEmployeeNumber(UUID.randomUUID().toString());
+        user.setEmployeeNumber(employeeNumber);
         user = userRepository.save(user);
         return UserMapper.toDomain(user);
+    }
+
+    private String createEmployeeNumber(Long tenantId, String tenantCode) {
+        long seq = nextEmployeeSeq(tenantId);
+        return String.format(
+                "%s-%0" + PADDING + "d",
+                tenantCode,
+                seq
+        );
+    }
+
+    /**
+     * Informe la prochaine valeur de séquence pour ce tenant de façon atomique.
+     */
+    private long nextEmployeeSeq(Long tenantId) {
+        // Verrou pessimiste sur la ligne
+        Optional<TenantUserSequence> opt = tenantUserSequenceRepository.findByTenantIdForUpdate(tenantId);
+
+        TenantUserSequence seq = opt.orElseGet(() -> new TenantUserSequence(tenantId, 0L));
+        long next = seq.getLastValue() + 1;
+        seq.setLastValue(next);
+        tenantUserSequenceRepository.save(seq);
+
+        return next;
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.bacos.mokengeli.biloko.infrastructure.model.Role;
 import com.bacos.mokengeli.biloko.infrastructure.model.Permission;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,9 +85,9 @@ public class UserMapper {
         if (domainUser == null) {
             return null;
         }
-
+String email = StringUtils.isEmpty(domainUser.getEmail()) ? null:domainUser.getEmail();
         return User.builder().id(domainUser.getId()).firstName(domainUser.getFirstName())
-                .email(domainUser.getEmail()).employeeNumber(domainUser.getEmployeeNumber()).lastName(domainUser.getLastName())
+                .email(email).employeeNumber(domainUser.getEmployeeNumber()).lastName(domainUser.getLastName())
                 .postName(domainUser.getPostName()).build();
     }
 }

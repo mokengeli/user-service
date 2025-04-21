@@ -28,21 +28,31 @@ public class UserService {
     }
 
     public DomainUser createUser(DomainUser domainUser, String password) throws ServiceException {
-        // verifier si l'utilisateur a le droit de creer un user
         boolean adminUser = this.userAppService.isAdminUser();
         String role = domainUser.getRoles().get(0);
 
-        boolean isManagerAndNotAdminRole = this.userAppService.isManagerUser() && !RoleEnum.ROLE_ADMIN.name().equals(role);
-        if (adminUser || isManagerAndNotAdminRole) {
-            return userPort.createNewUser(domainUser, password);
+        ConnectedUser connectedUser = this.userAppService.getConnectedUser();
+        if (!adminUser && !this.userAppService.isManagerUser()) {
+            String employeeNumber = connectedUser.getEmployeeNumber();
+            RoleEnum mainRole = this.userAppService.getMainRole();
+            String uuid = UUID.randomUUID().toString();
+            log.error("[{}]: User [{}] with role {} try to create a user with role {}",
+                    uuid, employeeNumber, role, mainRole);
+            throw new ServiceException(uuid, "You don't have the right to create user ");
         }
-        String employeeNumber = this.userAppService.getConnectedUser().getEmployeeNumber();
-        RoleEnum mainRole = this.userAppService.getMainRole();
-        String uuid = UUID.randomUUID().toString();
-        log.error("[{}]: User [{}] with role {} try to create a user with role {}",
-                uuid, employeeNumber, role, mainRole);
-        throw new ServiceException(uuid, "You don't have the right to create user with this " +
-                " role not authorized");
+        String tenantCode = connectedUser.getTenantCode();
+        if (this.userAppService.isManagerUser() &&
+                (!tenantCode.equals(domainUser.getTenantCode()))) {
+
+            String employeeNumber = connectedUser.getEmployeeNumber();
+            String uuid = UUID.randomUUID().toString();
+            log.error("[{}]: User [{}] with role {} try to create a user with for another restaurant {}",
+                    uuid, employeeNumber, role, domainUser.getTenantCode());
+            throw new ServiceException(uuid, "You don't have the right to create user for this restaurant");
+        }
+
+        return userPort.createNewUser(domainUser, password);
+
 
     }
 
