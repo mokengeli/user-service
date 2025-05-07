@@ -1,14 +1,13 @@
 package com.bacos.mokengeli.biloko.presentation.controller;
 
+import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.UserService;
-import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.presentation.controller.model.CreateUserRequest;
 import com.bacos.mokengeli.biloko.presentation.exception.ResponseStatusWrapperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +25,9 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<DomainUser> createUser(@RequestBody CreateUserRequest createUserRequest) {
+    public DomainUser createUser(@RequestBody CreateUserRequest createUserRequest) {
         try {
-            return ResponseEntity.ok(userService.createUser(createUserRequest, createUserRequest.getPassword()));
+            return userService.createUser(createUserRequest, createUserRequest.getPassword());
         } catch (ServiceException e) {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
@@ -45,13 +44,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DomainUser>> getAllUsers(
+    public Page<DomainUser> getAllUsers(
             @RequestParam("code") String tenantCode,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         try {
-            Page<DomainUser> users = userService.getAllUsers(tenantCode, page, size);
-            return ResponseEntity.ok(users);
+            return userService.getAllUsers(tenantCode, page, size);
+
         } catch (ServiceException e) {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
@@ -64,10 +63,9 @@ public class UserController {
      * @return
      */
     @GetMapping("/roles")
-    public ResponseEntity<List<String>> getAuthorizedRoleByUserProfile() {
+    public List<String> getAuthorizedRoleByUserProfile() {
         try {
-            List<String> roles = userService.getAuthorizedRoleByUserProfile();
-            return ResponseEntity.ok(roles);
+            return userService.getAuthorizedRoleByUserProfile();
         } catch (ServiceException e) {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
