@@ -72,6 +72,4 @@ public class UserController {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
     }
-
-
 }

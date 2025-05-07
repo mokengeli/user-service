@@ -110,7 +110,7 @@ public class UserAdapter implements UserPort {
         Pageable pageable = PageRequest.of(page, size);
         return userRepository
                 .findByTenantCode(tenantCode, pageable)
-                .map(UserMapper::toLigthDomain);
+                .map(UserMapper::toLightDomain);
     }
 
     @Override

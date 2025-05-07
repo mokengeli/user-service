@@ -2,10 +2,8 @@ package com.bacos.mokengeli.biloko.presentation.controller;
 
 
 import com.bacos.mokengeli.biloko.application.domain.DomainTenant;
-import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.TenantService;
-import com.bacos.mokengeli.biloko.presentation.controller.model.CreateUserRequest;
 import com.bacos.mokengeli.biloko.presentation.exception.ResponseStatusWrapperException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +25,7 @@ public class TenantController {
         this.tenantService = tenantService;
     }
 
+    @PreAuthorize("hasAuthority('CREATE_TENANTS')")
     @PostMapping
     public ResponseEntity<DomainTenant> createTenant(@RequestBody DomainTenant domainTenant) {
         try {

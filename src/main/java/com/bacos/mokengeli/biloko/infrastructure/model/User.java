@@ -28,7 +28,6 @@ public class User {
 
     private String postName;
 
-    @Column(unique = true)
     private String email;
 
     @Column(name = "employee_number", nullable = false, unique = true)
@@ -55,7 +54,7 @@ public class User {
     // Relation Many-to-Many avec les Rôles via UserRole
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_roles",
+            name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )

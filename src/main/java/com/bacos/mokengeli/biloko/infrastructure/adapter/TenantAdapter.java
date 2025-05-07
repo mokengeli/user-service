@@ -2,11 +2,18 @@ package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
 import com.bacos.mokengeli.biloko.application.domain.DomainTenant;
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
+import com.bacos.mokengeli.biloko.application.domain.EstablishmentTypeEnum;
+import com.bacos.mokengeli.biloko.application.domain.SubscriptionPlanEnum;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.TenantPort;
 import com.bacos.mokengeli.biloko.infrastructure.mapper.TenantMapper;
+import com.bacos.mokengeli.biloko.infrastructure.model.EstablishmentType;
+import com.bacos.mokengeli.biloko.infrastructure.model.SubscriptionPlan;
 import com.bacos.mokengeli.biloko.infrastructure.model.Tenant;
+import com.bacos.mokengeli.biloko.infrastructure.repository.EstablishmentTypeRepository;
+import com.bacos.mokengeli.biloko.infrastructure.repository.SubscriptionPlanRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.TenantRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,16 +27,21 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class TenantAdapter implements TenantPort {
     private final TenantRepository tenantRepository;
+    private final EstablishmentTypeRepository establishmentTypeRepository;
+    private final SubscriptionPlanRepository subscriptionPlanRepository;
     private static final int SLUG_LENGTH = 3;
     private static final int SUFFIX_LENGTH = 4;
     private static final int MAX_ATTEMPTS = 5;
 
     @Autowired
-    public TenantAdapter(TenantRepository tenantRepository) {
+    public TenantAdapter(TenantRepository tenantRepository, EstablishmentTypeRepository establishmentTypeRepository, SubscriptionPlanRepository subscriptionPlanRepository) {
         this.tenantRepository = tenantRepository;
+        this.establishmentTypeRepository = establishmentTypeRepository;
+        this.subscriptionPlanRepository = subscriptionPlanRepository;
     }
 
     @Override
@@ -48,7 +60,7 @@ public class TenantAdapter implements TenantPort {
         if (tenant == null) {
             return Optional.empty();
         }
-        return Optional.of(TenantMapper.toLightDomain(tenant));
+        return Optional.of(TenantMapper.toDomain(tenant));
     }
 
     @Override
@@ -73,18 +85,30 @@ public class TenantAdapter implements TenantPort {
             throw new ServiceException(errorId,
                     "Le nom \"" + domainTenant.getName() + "\" existe déjà.");
         }
-        if (domainTenant.getEmail() != null
-                && tenantRepository.existsByEmail(domainTenant.getEmail())) {
+        if (tenantRepository.existsByEmail(domainTenant.getEmail())) {
             throw new ServiceException(errorId,
                     "L'email \"" + domainTenant.getEmail() + "\" existe déjà.");
         }
 
+        EstablishmentType establishmentType = this.establishmentTypeRepository.findByCode(EstablishmentTypeEnum.
+                        RESTAURANT.name())
+                .orElseThrow(() -> {
+                    log.error(errorId, "Le type \"" + EstablishmentTypeEnum.RESTAURANT.name() + " n'existe pas");
+                    return new ServiceException(errorId, "Une erreur intendue s'est produite");
+                });
+        SubscriptionPlan subscriptionPlan = this.subscriptionPlanRepository.findByCode(SubscriptionPlanEnum.STARTER.name())
+                .orElseThrow(() -> {
+                    log.error(errorId, "Le type \"" + EstablishmentTypeEnum.RESTAURANT.name() + " n'existe pas");
+                    return new ServiceException(errorId, "Une erreur intendue s'est produite");
+                });
         Tenant tenant = TenantMapper.toEntity(domainTenant);
         LocalDateTime now = LocalDateTime.now();
         tenant.setCreatedAt(now);
+        tenant.setEstablishmentType(establishmentType);
+        tenant.setSubscriptionPlan(subscriptionPlan);
         tenant.setUpdatedAt(now);
         Tenant saved = tenantRepository.save(tenant);
-        return TenantMapper.toLightDomain(saved);
+        return TenantMapper.toDomain(saved);
     }
 
     private String retrieveTenantCode(String tenantName) throws ServiceException {
