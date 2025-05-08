@@ -1,5 +1,6 @@
 package com.bacos.mokengeli.biloko.application.service;
 
+import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
 import com.bacos.mokengeli.biloko.application.domain.RoleEnum;
 import com.bacos.mokengeli.biloko.application.domain.model.ConnectedUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
@@ -102,5 +103,16 @@ public class UserService {
         }
         RoleEnum mainRole = this.userAppService.getMainRole();
         return List.of(mainRole.name());
+    }
+
+    public List<DomainUserCount> getUserCountByRole(String tenantCode) throws ServiceException {
+        ConnectedUser connected = userAppService.getConnectedUser();
+        // seuls les admin ou users du même tenantCode y ont droit
+        if (!userAppService.isAdminUser() && !connected.getTenantCode().equals(tenantCode)) {
+            String id = UUID.randomUUID().toString();
+            log.error("[{}]: User [{}] tried to count users of another tenant [{}]", id, connected.getEmployeeNumber(), tenantCode);
+            throw new ServiceException(id, "You don't have the right to count users");
+        }
+        return userPort.countUsersByRole(tenantCode);
     }
 }

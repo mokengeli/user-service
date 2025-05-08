@@ -1,6 +1,7 @@
 package com.bacos.mokengeli.biloko.presentation.controller;
 
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
+import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.UserService;
 import com.bacos.mokengeli.biloko.presentation.controller.model.CreateUserRequest;
@@ -68,6 +69,16 @@ public class UserController {
             return userService.getAuthorizedRoleByUserProfile();
         } catch (ServiceException e) {
             throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
+
+    @GetMapping("/count-by-role")
+    public List<DomainUserCount> countByRole(@RequestParam("tenantCode") String tenantCode) {
+        try {
+            return userService.getUserCountByRole(tenantCode);
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(
+                    HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
     }
 }

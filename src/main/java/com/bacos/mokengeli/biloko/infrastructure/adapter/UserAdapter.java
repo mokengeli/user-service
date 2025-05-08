@@ -1,5 +1,6 @@
 package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
+import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
 import com.bacos.mokengeli.biloko.application.exception.UserServiceRuntimeException;
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -117,5 +119,13 @@ public class UserAdapter implements UserPort {
     public List<String> getAllRoles() {
         List<Role> all = this.roleRepository.findAll();
         return all.stream().map(Role::getLabel).toList();
+    }
+    @Override
+    public List<DomainUserCount> countUsersByRole(String tenantCode) {
+        List<UserRepository.RoleCount> rows =
+                userRepository.countByTenantCodeGroupByRole(tenantCode);
+        return rows.stream()
+                .map(r -> new DomainUserCount(r.getRole(), r.getCount()))
+                .collect(Collectors.toList());
     }
 }
