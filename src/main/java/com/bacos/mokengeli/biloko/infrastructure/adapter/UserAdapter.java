@@ -75,11 +75,12 @@ public class UserAdapter implements UserPort {
 
     private String createEmployeeNumber(Long tenantId, String tenantCode) {
         long seq = nextEmployeeSeq(tenantId);
-        return String.format(
+        String format = String.format(
                 "%s-%0" + PADDING + "d",
                 tenantCode,
                 seq
         );
+        return format.toLowerCase();
     }
 
     /**
@@ -120,6 +121,7 @@ public class UserAdapter implements UserPort {
         List<Role> all = this.roleRepository.findAll();
         return all.stream().map(Role::getLabel).toList();
     }
+
     @Override
     public List<DomainUserCount> countUsersByRole(String tenantCode) {
         List<UserRepository.RoleCount> rows =

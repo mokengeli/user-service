@@ -22,17 +22,17 @@ VALUES ('RESTAURANT', 'Restaurant', '', NOW(), NOW()),
 INSERT INTO tenants
 (name, code, address, email, establishment_type_id, subscription_plan_id, created_at)
 VALUES ('Mokengeli Biloko Plateform',
-        'Mok-Bil',
+        'mok-bil',
         'xxx',
         'bacos.systemes@gmail.com',
         (SELECT id FROM establishment_types WHERE code = 'PLATFORM'),
         (SELECT id FROM subscription_plans WHERE code = 'PREMIUM'),
         '2024-09-18');
 
--- 5) Historique de souscription pour “Mok-Bil”
+-- 5) Historique de souscription pour “mok-bil”
 INSERT INTO subscription_histories
     (tenant_id, subscription_plan_id, start_date, created_at)
-VALUES ((SELECT id FROM tenants WHERE code = 'Mok-Bil'),
+VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
         (SELECT id FROM subscription_plans WHERE code = 'PREMIUM'),
         NOW(),
         NOW());
@@ -40,7 +40,7 @@ VALUES ((SELECT id FROM tenants WHERE code = 'Mok-Bil'),
 -- 6) Initialisation de la séquence de numéros d’employé
 INSERT INTO tenant_user_sequence
     (tenant_id, last_value)
-VALUES ((SELECT id FROM tenants WHERE code = 'Mok-Bil'),
+VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
         0);
 
 -- 7) Création de l’utilisateur administrateur “Emmanuel B”
@@ -57,12 +57,12 @@ INSERT INTO users
  status,
  created_at,
  updated_at)
-VALUES ((SELECT id FROM tenants WHERE code = 'Mok-Bil'),
+VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
         'Emmanuel',
         'B',
         NULL,
         NULL,
-        'Mok-Bil',
+        'mok-bil',
         '$2a$10$zgdZgS9BAYe7B0NrUZkg8eUItX.ik54oR7jaM23iVboM3gbnT4D0C',
         'ACTIVE',
         '2025-04-18 00:00:00',
@@ -174,5 +174,5 @@ VALUES
 
 INSERT INTO users_roles (role_id, user_id)
 VALUES ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
-        (SELECT id FROM users WHERE employee_number = 'Mok-Bil'));
+        (SELECT id FROM users WHERE employee_number = 'mok-bil'));
 

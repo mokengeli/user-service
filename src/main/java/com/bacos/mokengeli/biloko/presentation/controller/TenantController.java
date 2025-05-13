@@ -60,9 +60,8 @@ public class TenantController {
         }
     }
 
-    @PreAuthorize("hasAuthority('VIEW_TENANTS')")
     @GetMapping("")
-    public ResponseEntity<DomainTenant> getTenantsByTenantCode(@RequestParam("code") String tenantCode) {
+    public ResponseEntity<DomainTenant> getTenantByTenantCode(@RequestParam("code") String tenantCode) {
         try {
             DomainTenant domainTenant = tenantService.getTenantByCode(tenantCode);
             return ResponseEntity.ok(domainTenant);

@@ -9,12 +9,15 @@ spring:
     username: user1
     password: password
     driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: user_schema
   jpa:                                      # Hibernate crée/mettre à jour les tables automatiquement
-    show-sql: true                                          # Affiche les requêtes SQL générées dans la console
     properties:
       hibernate:
-        default_schema: user_schema                 # Spécifie le schéma PostgreSQL à utiliser
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          time_zone: GMT+01:00 # Pour l'interpretation du temps a enregistrer en base
+  jackson:
+    time-zone: GMT+01:00 # Pour la serialisation du temps
 eureka:
   client:
     service-url:
@@ -31,7 +34,4 @@ security:
     secret: 9a4f2c_8d3b7a1e6f#45c8a0b3f268b1d4e6-f3c8a9d2b5f8e3a9c8-b5f6v8a3d9A@
   is-ssl: false
 
-springdoc:
-  api-docs:
-    group: user
 

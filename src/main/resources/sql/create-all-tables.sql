@@ -16,8 +16,8 @@ CREATE TABLE tenants (
                                              name      VARCHAR(100) NOT NULL UNIQUE,  -- Nom du client (ex. 'Restaurant A', 'Lounge B')
                                              address   TEXT,                          -- Adresse du client
                                              email     VARCHAR(100) NOT NULL UNIQUE,  -- Email du client
-                                             created_at TIMESTAMP NOT NULL,
-                                             updated_at TIMESTAMP
+                                             created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+                                             updated_at TIMESTAMP WITH TIME ZONE
 );
 
 -- Table des utilisateurs (users)
@@ -31,8 +31,8 @@ CREATE TABLE users (
                                            employee_number  VARCHAR(200) NOT NULL UNIQUE,
                                            password         VARCHAR(255) NOT NULL,
                                            status           VARCHAR(20) DEFAULT 'active',
-                                           created_at       TIMESTAMP,
-                                           updated_at       TIMESTAMP
+                                           created_at       TIMESTAMP WITH TIME ZONE NOT NULL,
+                                           updated_at       TIMESTAMP WITH TIME ZONE
 );
 
 -- Table des rôles (roles)
@@ -40,7 +40,7 @@ CREATE TABLE roles (
                                            id          BIGSERIAL PRIMARY KEY,
                                            label       VARCHAR(50) NOT NULL UNIQUE,
                                            description TEXT,
-                                           created_at  TIMESTAMP
+                                           created_at  TIMESTAMP WITH TIME ZONE
 );
 
 -- Table d'association des utilisateurs et des rôles (users_roles)
@@ -55,7 +55,7 @@ CREATE TABLE permissions (
                                                  id          BIGSERIAL PRIMARY KEY,
                                                  label       VARCHAR(100) NOT NULL UNIQUE,
                                                  description TEXT,
-                                                 created_at  TIMESTAMP
+                                                 created_at  TIMESTAMP WITH TIME ZONE
 );
 
 -- Table d'association des rôles et des permissions (roles_permissions)
@@ -74,7 +74,7 @@ CREATE TABLE audit_logs (
                                                 entity     VARCHAR(100),
                                                 entity_id  BIGINT,
                                                 description TEXT,
-                                                created_at TIMESTAMP
+                                                created_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
 -- Séquence pour génération de numéro d'employé par tenant
@@ -93,8 +93,8 @@ CREATE TABLE subscription_plans (
                                                        label          VARCHAR(100) NOT NULL,
                                                        monthly_price  NUMERIC(10,2) NOT NULL,
                                                        features       JSONB        NULL,
-                                                       created_at     TIMESTAMP    NOT NULL DEFAULT NOW(),
-                                                       updated_at     TIMESTAMP    NOT NULL DEFAULT NOW()
+                                                       created_at     TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT NOW(),
+                                                       updated_at     TIMESTAMP WITH TIME ZONE    NOT NULL DEFAULT NOW()
 );
 
 -- Types d’enseigne
@@ -103,8 +103,8 @@ CREATE TABLE establishment_types (
                                                         code        VARCHAR(50) NOT NULL UNIQUE,
                                                         label       VARCHAR(100) NOT NULL,
                                                         description TEXT        NULL,
-                                                        created_at  TIMESTAMP   NOT NULL DEFAULT NOW(),
-                                                        updated_at  TIMESTAMP   NOT NULL DEFAULT NOW()
+                                                        created_at  TIMESTAMP WITH TIME ZONE   NOT NULL DEFAULT NOW(),
+                                                        updated_at  TIMESTAMP WITH TIME ZONE
 );
 
 -- Historique des abonnements (subscription_histories)
@@ -114,7 +114,8 @@ CREATE TABLE subscription_histories (
                                                           subscription_plan_id BIGINT    NOT NULL,
                                                           start_date           DATE      NOT NULL,
                                                           end_date             DATE      NULL,
-                                                          created_at           TIMESTAMP NOT NULL DEFAULT NOW()
+                                                          created_at           TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                                                          updated_at  TIMESTAMP WITH TIME ZONE
 );
 
 -- 4) Mises à jour des tables existantes
