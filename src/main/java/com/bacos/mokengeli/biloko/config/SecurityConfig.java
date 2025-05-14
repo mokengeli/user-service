@@ -23,11 +23,9 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private String allowedOrigins;
     @Autowired
-    public SecurityConfig(@Value("${security.cors.allowed-origins}") String allowedOrigins, JwtAuthFilter jwtAuthFilter) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
-        this.allowedOrigins = allowedOrigins;
     }
 
     @Bean
@@ -36,8 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/public/**").permitAll()
                         .requestMatchers( "/api/user").permitAll()
-                        //.requestMatchers( "/api/user/by-employee-number").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/actuator/info", "/actuator/health").permitAll()
                         .anyRequest().authenticated()  // Toutes les autres routes nécessitent une authentification
                 )
                 //.cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS configuration
@@ -46,13 +44,5 @@ public class SecurityConfig {
                 .build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
-        config.setAllowedMethods(Collections.singletonList("*"));
-        config.setAllowCredentials(true);
-        config.setAllowedHeaders(Collections.singletonList("*"));
-        return request -> config;
-    }
+
 }
