@@ -176,3 +176,8 @@ INSERT INTO users_roles (role_id, user_id)
 VALUES ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
         (SELECT id FROM users WHERE employee_number = 'mok-bil'));
 
+
+INSERT INTO session_limits(app_type, max_sessions)
+VALUES ('WEB', 4),
+       ('PHONE', 1);
+
