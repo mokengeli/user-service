@@ -51,6 +51,7 @@ INSERT INTO users
  first_name,
  last_name,
  post_name,
+ user_name,
  email,
  employee_number,
  password,
@@ -59,8 +60,9 @@ INSERT INTO users
  updated_at)
 VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
         'Emmanuel',
-        'B',
+        'Bala',
         NULL,
+        'mokaBil',
         NULL,
         'mok-bil',
         '$2a$10$zgdZgS9BAYe7B0NrUZkg8eUItX.ik54oR7jaM23iVboM3gbnT4D0C',

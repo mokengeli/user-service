@@ -81,4 +81,15 @@ public class UserController {
                     HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
     }
+
+
+    @GetMapping("/username/check")
+    public boolean isUserNameAvailable(@RequestParam("userName") String userName) {
+        try {
+            return this.userService.isUserNameAvailable(userName);
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(
+                    HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
 }

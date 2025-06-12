@@ -130,4 +130,9 @@ public class UserAdapter implements UserPort {
                 .map(r -> new DomainUserCount(r.getRole(), r.getCount()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean isUserNameAvailable(String userName) {
+        return this.userRepository.existsByUserName(userName);
+    }
 }

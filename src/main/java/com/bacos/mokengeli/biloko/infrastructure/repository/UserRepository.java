@@ -14,7 +14,9 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmployeeNumber(String employeeNumber);
+
     Page<User> findByTenantCode(String tenantCode, Pageable pageable);
+
     @Query("""
             SELECT r.label AS role, COUNT(u) AS count
             FROM User u
@@ -24,9 +26,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
             """)
     List<RoleCount> countByTenantCodeGroupByRole(@Param("tenantCode") String tenantCode);
 
+    boolean existsByUserName(String userName);
+
 
     interface RoleCount {
         String getRole();
+
         Long getCount();
     }
 

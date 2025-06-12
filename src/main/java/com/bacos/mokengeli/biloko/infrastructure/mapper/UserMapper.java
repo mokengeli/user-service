@@ -46,6 +46,7 @@ public class UserMapper {
                 .tenantSubscriptionPlan(subPlan)
                 .employeeNumber(user.getEmployeeNumber())
                 .firstName(user.getFirstName())
+                .userName(user.getUserName())
                 .lastName(user.getLastName())
                 .postName(user.getPostName())
                 .email(user.getEmail())
@@ -65,6 +66,7 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .postName(user.getPostName())
+                .userName(user.getUserName())
                 .createdAt(user.getCreatedAt())
                 .roles(user.getRoles().stream()
                         .map(r -> r.getLabel())
@@ -78,6 +80,7 @@ public class UserMapper {
                 .id(domainUser.getId())
                 .firstName(domainUser.getFirstName())
                 .lastName(domainUser.getLastName())
+                .userName(domainUser.getUserName())
                 .employeeNumber(domainUser.getEmployeeNumber())
                 .email(domainUser.getEmail())
                 // tenant, roles et permissions sont gérés par UserPort/Service

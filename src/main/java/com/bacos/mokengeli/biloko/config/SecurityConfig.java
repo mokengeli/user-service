@@ -34,8 +34,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers( "/public/**").permitAll()
                         .requestMatchers( "/api/user").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/info", "/actuator/health", "/actuator/metrics/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()  // Toutes les autres routes nécessitent une authentification
                 )
                 //.cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS configuration

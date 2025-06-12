@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
 /**
  * Représente un locataire (enseigne) avec son type et son plan.
  */

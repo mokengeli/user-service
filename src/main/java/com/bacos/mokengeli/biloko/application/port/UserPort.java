@@ -18,4 +18,6 @@ public interface UserPort {
     List<String> getAllRoles();
 
     List<DomainUserCount> countUsersByRole(String tenantCode);
+
+    boolean isUserNameAvailable(String userName);
 }

@@ -51,10 +51,7 @@ public class UserService {
                     uuid, employeeNumber, role, domainUser.getTenantCode());
             throw new ServiceException(uuid, "You don't have the right to create user for this restaurant");
         }
-
         return userPort.createNewUser(domainUser, password);
-
-
     }
 
 
@@ -114,5 +111,15 @@ public class UserService {
             throw new ServiceException(id, "You don't have the right to count users");
         }
         return userPort.countUsersByRole(tenantCode);
+    }
+
+    public boolean isUserNameAvailable(String userName) throws ServiceException {
+        ConnectedUser connected = userAppService.getConnectedUser();
+        if (!userAppService.isAdminUser() && !userAppService.isManagerUser()) {
+            String id = UUID.randomUUID().toString();
+            log.error("[{}]: User [{}] don't have right to check username availability", id, connected.getEmployeeNumber());
+            throw new ServiceException(id, "You don't have the right to count users");
+        }
+        return this.userPort.isUserNameAvailable(userName);
     }
 }
