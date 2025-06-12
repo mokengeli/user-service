@@ -133,6 +133,6 @@ public class UserAdapter implements UserPort {
 
     @Override
     public boolean isUserNameAvailable(String userName) {
-        return this.userRepository.existsByUserName(userName);
+        return !this.userRepository.existsByUserName(userName);
     }
 }

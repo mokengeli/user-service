@@ -126,8 +126,6 @@ VALUES
     ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM permissions WHERE label = 'VIEW_USERS')),
     ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
-     (SELECT id FROM permissions WHERE label = 'CREATE_USER')),
-    ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM permissions WHERE label = 'VIEW_TENANTS')),
     ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
      (SELECT id FROM permissions WHERE label = 'CREATE_TENANTS')),
