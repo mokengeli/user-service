@@ -1,10 +1,12 @@
 package com.bacos.mokengeli.biloko.infrastructure.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -27,13 +29,13 @@ public class SubscriptionHistory {
     private SubscriptionPlan subscriptionPlan;
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private OffsetDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDate endDate;
+    private OffsetDateTime endDate;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

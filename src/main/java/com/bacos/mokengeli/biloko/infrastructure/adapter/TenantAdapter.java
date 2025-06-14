@@ -1,7 +1,6 @@
 package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
 import com.bacos.mokengeli.biloko.application.domain.DomainTenant;
-import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.domain.EstablishmentTypeEnum;
 import com.bacos.mokengeli.biloko.application.domain.SubscriptionPlanEnum;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
@@ -21,7 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -102,7 +101,7 @@ public class TenantAdapter implements TenantPort {
                     return new ServiceException(errorId, "Une erreur intendue s'est produite");
                 });
         Tenant tenant = TenantMapper.toEntity(domainTenant);
-        LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now();
         tenant.setCreatedAt(now);
         tenant.setEstablishmentType(establishmentType);
         tenant.setSubscriptionPlan(subscriptionPlan);

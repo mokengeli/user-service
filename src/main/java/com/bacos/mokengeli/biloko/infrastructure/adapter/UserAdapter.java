@@ -1,8 +1,8 @@
 package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
+import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
 import com.bacos.mokengeli.biloko.application.exception.UserServiceRuntimeException;
-import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
 import com.bacos.mokengeli.biloko.infrastructure.mapper.UserMapper;
 import com.bacos.mokengeli.biloko.infrastructure.model.*;
@@ -17,7 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,7 +66,7 @@ public class UserAdapter implements UserPort {
         user.setStatus(UserStatusEnum.ACTIVE);
         user.setPassword(password);
         user.setTenant(tenant);
-        user.setCreatedAt(LocalDateTime.now());
+        user.setCreatedAt(OffsetDateTime.now());
         user.setRoles(roles);
         user.setEmployeeNumber(employeeNumber);
         user = userRepository.save(user);

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 
 /**
@@ -22,6 +22,6 @@ public class DomainTenant {
     private String email;
     private DomainEstablishmentType establishmentType;
     private DomainSubscriptionPlan subscriptionPlan;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private OffsetDateTime createdAt;
+    private OffsetDateTime updatedAt;
 }
