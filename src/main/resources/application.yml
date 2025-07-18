@@ -44,6 +44,6 @@ security:
   is-ssl: false
 logging:
   level:
-    com.zaxxer.hikari: DEBUG
+    com.zaxxer.hikari: INFO
 
 
