@@ -74,14 +74,14 @@ public class UserService {
         throw new ServiceException(UUID.randomUUID().toString(), "User not found with employee number " + employeeNumber);
     }
 
-    public Page<DomainUser> getAllUsers(String tenantCode, int page, int size) throws ServiceException {
+    public Page<DomainUser> getAllUsers(String tenantCode, int page, int size, String search) throws ServiceException {
         ConnectedUser user = userAppService.getConnectedUser();
         if (!userAppService.isAdminUser() && !user.getTenantCode().equals(tenantCode)) {
             String id = UUID.randomUUID().toString();
             log.error("[{}]: User [{}] tried to list users for tenant [{}]", id, user.getEmployeeNumber(), tenantCode);
             throw new ServiceException(id, "Forbidden");
         }
-        return userPort.findAllUsersByTenant(tenantCode, page, size);
+        return userPort.findAllUsersByTenant(tenantCode, page, size, search);
     }
 
     public List<String> getAuthorizedRoleByUserProfile() throws ServiceException {

@@ -28,6 +28,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUserName(String userName);
 
+    Page<User> findByTenantCodeAndLastNameContainingIgnoreCase(String tenantCode, String search, Pageable pageable);
+
 
     interface RoleCount {
         String getRole();

@@ -47,13 +47,18 @@ public class UserController {
     @GetMapping
     public Page<DomainUser> getAllUsers(
             @RequestParam("code") String tenantCode,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "page",  defaultValue = "0")  int    page,
+            @RequestParam(value = "size",  defaultValue = "10") int    size,
+            @RequestParam(value = "search", required = false)   String search
+    ) {
         try {
-            return userService.getAllUsers(tenantCode, page, size);
-
+            return userService.getAllUsers(tenantCode, page, size, search);
         } catch (ServiceException e) {
-            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+            throw new ResponseStatusWrapperException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e.getTechnicalId()
+            );
         }
     }
 

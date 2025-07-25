@@ -13,7 +13,7 @@ public interface UserPort {
 
     Optional<DomainUser> getUserByEmployeeNumber(String employeeNumber);
 
-    Page<DomainUser> findAllUsersByTenant(String tenantCode, int page, int size) throws ServiceException;
+    Page<DomainUser> findAllUsersByTenant(String tenantCode, int page, int size, String search) throws ServiceException;
 
     List<String> getAllRoles();
 

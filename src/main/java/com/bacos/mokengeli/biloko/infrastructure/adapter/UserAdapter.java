@@ -109,12 +109,26 @@ public class UserAdapter implements UserPort {
     }
 
     @Override
-    public Page<DomainUser> findAllUsersByTenant(String tenantCode, int page, int size) {
+    public Page<DomainUser> findAllUsersByTenant(
+            String tenantCode,
+            int page,
+            int size,
+            String search
+    ) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository
-                .findByTenantCode(tenantCode, pageable)
-                .map(UserMapper::toLightDomain);
+        Page<User> result;
+
+        if (search == null || search.trim().isEmpty()) {
+            result = userRepository.findByTenantCode(tenantCode, pageable);
+        } else {
+            result = userRepository.findByTenantCodeAndLastNameContainingIgnoreCase(
+                    tenantCode, search, pageable
+            );
+        }
+
+        return result.map(UserMapper::toDomain);
     }
+
 
     @Override
     public List<String> getAllRoles() {
