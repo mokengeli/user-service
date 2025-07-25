@@ -50,13 +50,19 @@ public class TenantController {
     @PreAuthorize("hasAuthority('VIEW_TENANTS')")
     @GetMapping("/all/pg")
     public ResponseEntity<Page<DomainTenant>> getAllTenantsWithPagination(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "page",   defaultValue = "0")  int    page,
+            @RequestParam(value = "size",   defaultValue = "10") int    size,
+            @RequestParam(value = "search", required = false)    String search
+    ) {
         try {
-            Page<DomainTenant> tenants = tenantService.getAllTenants(page, size);
+            Page<DomainTenant> tenants = tenantService.getAllTenants(page, size, search);
             return ResponseEntity.ok(tenants);
         } catch (ServiceException e) {
-            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+            throw new ResponseStatusWrapperException(
+                    HttpStatus.BAD_REQUEST,
+                    e.getMessage(),
+                    e.getTechnicalId()
+            );
         }
     }
 

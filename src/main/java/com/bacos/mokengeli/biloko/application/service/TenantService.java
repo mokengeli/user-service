@@ -61,23 +61,27 @@ public class TenantService {
         throw new ServiceException(errorId, "You don't have permission to perform get tenant");
     }
 
-    public Page<DomainTenant> getAllTenants(int page, int size) throws ServiceException {
+    public Page<DomainTenant> getAllTenants(int page, int size, String search) throws ServiceException {
         ConnectedUser current = userAppService.getConnectedUser();
         if (userAppService.isAdminUser()) {
-            return tenantPort.findAllTenantsByTenant(page, size);
+            return tenantPort.findAllTenantsByTenant(page, size, search);
         }
-        String tenantCode = current.getTenantCode();
-        Optional<DomainTenant> tenantByCode = tenantPort.getTenantByCode(tenantCode);
-        if (tenantByCode.isPresent()) {
+        // Non-admin: only their own tenant
+        Optional<DomainTenant> opt = tenantPort.getTenantByCode(current.getTenantCode());
+        if (opt.isPresent()) {
+            List<DomainTenant> single = List.of(opt.get());
+            long total = (search == null || search.trim().isEmpty()
+                    || opt.get().getName().toLowerCase().contains(search.toLowerCase()))
+                    ? 1L : 0L;
             return new PageImpl<>(
-                    Collections.singletonList(tenantByCode.get()),
+                    total == 1 ? single : Collections.emptyList(),
                     PageRequest.of(page, size),
-                    1  // totalElements = 1
+                    total
             );
         }
         String errorId = UUID.randomUUID().toString();
-        log.error("[{}]: No tenant found for User [{}]", errorId, current.getEmployeeNumber());
-        throw new ServiceException(errorId, "You are not attach to any tenant. Please contact the support team.");
+        log.error("[{}]: No tenant found for user [{}]", errorId, current.getEmployeeNumber());
+        throw new ServiceException(errorId, "You are not attached to any tenant");
     }
 
     public DomainTenant createTenant(DomainTenant domainTenant) throws ServiceException {

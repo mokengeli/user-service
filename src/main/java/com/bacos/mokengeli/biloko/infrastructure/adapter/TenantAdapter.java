@@ -62,13 +62,18 @@ public class TenantAdapter implements TenantPort {
         return Optional.of(TenantMapper.toDomain(tenant));
     }
 
+
     @Override
-    public Page<DomainTenant> findAllTenantsByTenant(int page, int size) {
+    public Page<DomainTenant> findAllTenantsByTenant(int page, int size, String search) {
         Pageable pageable = PageRequest.of(page, size);
-        // méthode JPA paginée
-        return tenantRepository
-                .findAll(pageable)
-                .map(TenantMapper::toDomain);
+        if (search == null || search.trim().isEmpty()) {
+            return tenantRepository
+                    .findAll(pageable)
+                    .map(TenantMapper::toDomain);
+        }
+        Page<Tenant> filtered = tenantRepository
+                .findByNameContainingIgnoreCase(search, pageable);
+        return filtered.map(TenantMapper::toDomain);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface TenantPort {
 
     Optional<DomainTenant> getTenantByCode(String tenantCode);
 
-    Page<DomainTenant> findAllTenantsByTenant(int page, int size);
+    Page<DomainTenant> findAllTenantsByTenant(int page, int size, String search);
 
     DomainTenant createNewTenant(DomainTenant domainTenant) throws ServiceException;
 }
