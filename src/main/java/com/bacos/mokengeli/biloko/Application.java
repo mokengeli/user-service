@@ -13,7 +13,7 @@ public class Application {
     public static void main(String[] args) {
         // Pour configurer de manière globale le fait que l'application aura des dates en UTC+1 pour gerer
         // le temps en local
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT+01:00"));
+        TimeZone.setDefault(TimeZone.getTimeZone("Europe/Paris"));
         SpringApplication.run(Application.class, args);
     }
 }
