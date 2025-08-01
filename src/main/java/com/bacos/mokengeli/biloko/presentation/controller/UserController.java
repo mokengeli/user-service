@@ -2,6 +2,8 @@ package com.bacos.mokengeli.biloko.presentation.controller;
 
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
+import com.bacos.mokengeli.biloko.application.domain.UpdateUserPinRequest;
+import com.bacos.mokengeli.biloko.application.domain.UpdateUserPinResponse;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import com.bacos.mokengeli.biloko.application.service.UserService;
 import com.bacos.mokengeli.biloko.presentation.controller.model.CreateUserRequest;
@@ -44,12 +46,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("/by-identifier")
+    public DomainUser getUserByIdentifier(@RequestParam("identifier") String identifier) {
+        try {
+            return this.userService.getUserByIdentifier(identifier);
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
+
     @GetMapping
     public Page<DomainUser> getAllUsers(
             @RequestParam("code") String tenantCode,
-            @RequestParam(value = "page",  defaultValue = "0")  int    page,
-            @RequestParam(value = "size",  defaultValue = "10") int    size,
-            @RequestParam(value = "search", required = false)   String search
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "search", required = false) String search
     ) {
         try {
             return userService.getAllUsers(tenantCode, page, size, search);
@@ -92,6 +103,25 @@ public class UserController {
     public boolean isUserNameAvailable(@RequestParam("userName") String userName) {
         try {
             return this.userService.isUserNameAvailable(userName);
+        } catch (ServiceException e) {
+            throw new ResponseStatusWrapperException(
+                    HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
+        }
+    }
+
+    @GetMapping("/verify/validation/pin")
+    public Boolean isValidationPinOk(
+            @RequestParam("pin") Integer pin
+    ) {
+        return userService.verifyValidationPin(pin);
+    }
+
+    @PutMapping("/pin")
+    public UpdateUserPinResponse updatePin(
+            @RequestBody UpdateUserPinRequest request
+    ) {
+        try {
+            return userService.updatePin(request);
         } catch (ServiceException e) {
             throw new ResponseStatusWrapperException(
                     HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());

@@ -4,7 +4,7 @@ import com.bacos.mokengeli.biloko.application.domain.DomainTenant;
 import com.bacos.mokengeli.biloko.application.domain.EstablishmentTypeEnum;
 import com.bacos.mokengeli.biloko.application.domain.SubscriptionPlanEnum;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
-import com.bacos.mokengeli.biloko.application.service.TenantPort;
+import com.bacos.mokengeli.biloko.application.port.TenantPort;
 import com.bacos.mokengeli.biloko.infrastructure.mapper.TenantMapper;
 import com.bacos.mokengeli.biloko.infrastructure.model.EstablishmentType;
 import com.bacos.mokengeli.biloko.infrastructure.model.SubscriptionPlan;

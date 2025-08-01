@@ -49,10 +49,14 @@ public class User {
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
+    @Column(name = "validation_pin")
+    private String validationPin;
+
     // Relation avec le Tenant (Many-to-One)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
+
 
     // Relation Many-to-Many avec les Rôles via UserRole
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)

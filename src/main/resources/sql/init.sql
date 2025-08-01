@@ -181,3 +181,16 @@ INSERT INTO session_limits(app_type, max_sessions)
 VALUES ('WEB', 4),
        ('PHONE', 1);
 
+-- Ajout supplementaire 30/07/2025
+INSERT INTO permissions (label, description, created_at)
+VALUES ('ORDER_DEBT_VALIDATION', 'Permission de valider les dettes sur les commandes  ', CURRENT_TIMESTAMP),
+       ('CLOSE_ORDER_WITH_DEBT', 'Permission de cloturer une commande avec impayé  ', CURRENT_TIMESTAMP);
+
+
+INSERT INTO roles_permissions (role_id, permission_id)
+VALUES  ((SELECT id FROM roles WHERE label = 'ROLE_SERVER'),
+         (SELECT id FROM permissions WHERE label = 'CLOSE_ORDER_WITH_DEBT')),
+        ((SELECT id FROM roles WHERE label = 'ROLE_MANAGER'),
+         (SELECT id FROM permissions WHERE label = 'CLOSE_ORDER_WITH_DEBT')),
+        ((SELECT id FROM roles WHERE label = 'ROLE_MANAGER'),
+         (SELECT id FROM permissions WHERE label = 'ORDER_DEBT_VALIDATION'));

@@ -2,16 +2,15 @@ package com.bacos.mokengeli.biloko.application.service;
 
 
 import com.bacos.mokengeli.biloko.application.domain.DomainTenant;
-import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.domain.RoleEnum;
 import com.bacos.mokengeli.biloko.application.domain.model.ConnectedUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
+import com.bacos.mokengeli.biloko.application.port.TenantPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;

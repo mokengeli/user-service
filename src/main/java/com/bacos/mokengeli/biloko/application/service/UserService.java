@@ -1,10 +1,8 @@
 package com.bacos.mokengeli.biloko.application.service;
 
-import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
-import com.bacos.mokengeli.biloko.application.domain.RoleEnum;
+import com.bacos.mokengeli.biloko.application.domain.*;
 import com.bacos.mokengeli.biloko.application.domain.model.ConnectedUser;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
-import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +72,17 @@ public class UserService {
         throw new ServiceException(UUID.randomUUID().toString(), "User not found with employee number " + employeeNumber);
     }
 
+    public DomainUser getUserByIdentifier(String identifier) throws ServiceException {
+        Optional<DomainUser> optUser = this.userPort.getUserByIdentifier(identifier);
+        if (optUser.isPresent()) {
+            return optUser.get();
+        }
+        String uuid = UUID.randomUUID().toString();
+        log.error("[{}]:  No User  found with employee number {}",
+                uuid, identifier);
+        throw new ServiceException(UUID.randomUUID().toString(), "User not found with employee number " + identifier);
+    }
+
     public Page<DomainUser> getAllUsers(String tenantCode, int page, int size, String search) throws ServiceException {
         ConnectedUser user = userAppService.getConnectedUser();
         if (!userAppService.isAdminUser() && !user.getTenantCode().equals(tenantCode)) {
@@ -121,5 +130,54 @@ public class UserService {
             throw new ServiceException(id, "You don't have the right to count users");
         }
         return this.userPort.isUserNameAvailable(userName);
+    }
+
+    public Boolean verifyValidationPin(Integer pin) {
+        ConnectedUser connected = userAppService.getConnectedUser();
+        return this.userPort.verifyPin(connected.getEmployeeNumber(), pin);
+    }
+
+    public UpdateUserPinResponse updatePin(UpdateUserPinRequest request) throws ServiceException {
+        ConnectedUser connected = userAppService.getConnectedUser();
+        boolean byPassOldPinValidation = false;
+
+
+        if (!userAppService.isAdminUser() && userAppService.isManagerUser()) {
+            if (request.getTargetEmployeeNumber() != null) {
+                Optional<DomainUser> optUserOfTarget = this.userPort.getUserByIdentifier(request.getTargetEmployeeNumber());
+                if (optUserOfTarget.isEmpty()) {
+                    String id = UUID.randomUUID().toString();
+                    log.error("[{}]:[{}] No user found with targetEmployee number {}", id, connected.getEmployeeNumber(),
+                            request.getTargetEmployeeNumber());
+                    throw new ServiceException(id, "You don't have the right to update the pin for " +
+                            "another user users");
+                }
+                DomainUser domainTargetUser = optUserOfTarget.get();
+
+                if (!connected.getTenantCode().equals(domainTargetUser.getTenantCode())) {
+                    String id = UUID.randomUUID().toString();
+                    log.error("[{}]:[{}] Connected User Tenant is {} but the targeted is {}", id, connected.getEmployeeNumber(),
+                            connected.getTenantCode(), domainTargetUser.getTenantCode());
+                    throw new ServiceException(id, "You don't have the right to update the pin for " +
+                            "another user users");
+                }
+                if (!connected.getEmployeeNumber().equals(domainTargetUser.getEmployeeNumber())
+                        && !connected.getEmployeeNumber().equals(domainTargetUser.getUserName())) {
+                    byPassOldPinValidation = true;
+                }
+
+            }
+        }
+
+        // si le targetemployee number est different de null je le prend sinon je prend celui de l'utilisateur connecter
+        String identifier = request.getTargetEmployeeNumber() != null ?
+                request.getTargetEmployeeNumber() : connected.getEmployeeNumber();
+
+        if (userAppService.isAdminUser()) {
+            return userPort.updateUserPin(identifier, request, true);
+        }
+
+
+        return userPort.updateUserPin(identifier, request, byPassOldPinValidation);
     }
 }

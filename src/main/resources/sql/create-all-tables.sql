@@ -248,3 +248,8 @@ CREATE INDEX idx_audit_logs_tenant_id
 
 CREATE INDEX idx_audit_logs_user_id
     ON audit_logs(user_id);
+
+
+-- Ajout supplementaire 30/07/2025
+-- Ajouter à la table users
+ALTER TABLE users ADD COLUMN validation_pin VARCHAR(8);
