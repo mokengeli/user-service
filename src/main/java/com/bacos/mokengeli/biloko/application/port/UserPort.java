@@ -2,6 +2,8 @@ package com.bacos.mokengeli.biloko.application.port;
 
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
+import com.bacos.mokengeli.biloko.application.domain.UpdateUserPinRequest;
+import com.bacos.mokengeli.biloko.application.domain.UpdateUserPinResponse;
 import com.bacos.mokengeli.biloko.application.exception.ServiceException;
 import org.springframework.data.domain.Page;
 
@@ -20,4 +22,11 @@ public interface UserPort {
     List<DomainUserCount> countUsersByRole(String tenantCode);
 
     boolean isUserNameAvailable(String userName);
+
+    Boolean verifyPin(String identifier, Integer pin);
+
+    Optional<DomainUser> getUserByIdentifier(String identifier);
+
+    UpdateUserPinResponse updateUserPin(String  identifier, UpdateUserPinRequest request, boolean byPassOldPinValidation );
+
 }

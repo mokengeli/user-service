@@ -30,6 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findByTenantCodeAndLastNameContainingIgnoreCase(String tenantCode, String search, Pageable pageable);
 
+    Optional<User> findByUserName(String userName);
+
 
     interface RoleCount {
         String getRole();

@@ -2,8 +2,11 @@ package com.bacos.mokengeli.biloko.infrastructure.adapter;
 
 import com.bacos.mokengeli.biloko.application.domain.DomainUser;
 import com.bacos.mokengeli.biloko.application.domain.DomainUserCount;
+import com.bacos.mokengeli.biloko.application.domain.UpdateUserPinRequest;
+import com.bacos.mokengeli.biloko.application.domain.UpdateUserPinResponse;
 import com.bacos.mokengeli.biloko.application.exception.UserServiceRuntimeException;
 import com.bacos.mokengeli.biloko.application.port.UserPort;
+import com.bacos.mokengeli.biloko.application.service.PinEncoder;
 import com.bacos.mokengeli.biloko.infrastructure.mapper.UserMapper;
 import com.bacos.mokengeli.biloko.infrastructure.model.*;
 import com.bacos.mokengeli.biloko.infrastructure.repository.RoleRepository;
@@ -30,14 +33,16 @@ public class UserAdapter implements UserPort {
     private final TenantRepository tenantRepository;
     private final RoleRepository roleRepository;
     private final TenantUserSequenceRepository tenantUserSequenceRepository;
+    private final PinEncoder encoder;
 
     @Autowired
     public UserAdapter(UserRepository userRepository, TenantRepository tenantRepository, RoleRepository roleRepository,
-                       TenantUserSequenceRepository tenantUserSequenceRepository) {
+                       TenantUserSequenceRepository tenantUserSequenceRepository, PinEncoder encoder) {
         this.userRepository = userRepository;
         this.tenantRepository = tenantRepository;
         this.roleRepository = roleRepository;
         this.tenantUserSequenceRepository = tenantUserSequenceRepository;
+        this.encoder = encoder;
     }
 
     @Transactional
@@ -148,5 +153,57 @@ public class UserAdapter implements UserPort {
     @Override
     public boolean isUserNameAvailable(String userName) {
         return !this.userRepository.existsByUserName(userName);
+    }
+
+
+    @Override
+    public Optional<DomainUser> getUserByIdentifier(String identifier) {
+        DomainUser domain = UserMapper.toDomain(findUserByEmployeeNumberOrUsername(identifier));
+        return Optional.of(domain);
+    }
+
+    private User findUserByEmployeeNumberOrUsername(String employeeNumberOrUsername) {
+        Optional<User> byEmployeeNumber = this.userRepository.findByEmployeeNumber(employeeNumberOrUsername);
+        if (byEmployeeNumber.isEmpty()) {
+            Optional<User> byUsername = this.userRepository.findByUserName(employeeNumberOrUsername);
+            if (byUsername.isPresent()) {
+                return byUsername.get();
+            }
+            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Aucun utilisateur " +
+                    "trouvé avec le matricule ou username = " + employeeNumberOrUsername);
+        }
+        return byEmployeeNumber.get();
+    }
+
+    @Override
+    public Boolean verifyPin(String identifier, Integer pin) {
+        User user = findUserByEmployeeNumberOrUsername(identifier);
+        return encoder.matches(pin.toString(), user.getValidationPin());
+    }
+
+    @Override
+    public UpdateUserPinResponse updateUserPin(String identifier, UpdateUserPinRequest req, boolean byPassOldPinValidation) {
+        // 1. determine target user
+        User target = this.findUserByEmployeeNumberOrUsername(identifier);
+
+        // 2. if existing PIN, verify currentPin
+        if (!byPassOldPinValidation && target.getValidationPin() != null) {
+            if (req.getCurrentPin() == null || !encoder.matches(req.getCurrentPin(), target.getValidationPin())) {
+                throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Current PIN incorrect");
+            }
+        }
+        // 3. validate new PIN format
+        String newPin = req.getNewPin().toString();
+        if (!newPin.matches("\\d{4}")) {
+            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "PIN must be exactly 4 digits");
+        }
+        if (encoder.isSequential(newPin) || encoder.isRepetitive(newPin)) {
+            throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "PIN is too trivial");
+        }
+        // 4. hash and store
+        target.setValidationPin(encoder.encode(newPin));
+        userRepository.save(target);
+        // 5. optional audit or notification
+        return new UpdateUserPinResponse("PIN updated successfully");
     }
 }
