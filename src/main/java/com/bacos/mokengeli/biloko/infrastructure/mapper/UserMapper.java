@@ -5,6 +5,7 @@ import com.bacos.mokengeli.biloko.application.domain.DomainEstablishmentType;
 import com.bacos.mokengeli.biloko.application.domain.DomainSubscriptionPlan;
 import com.bacos.mokengeli.biloko.infrastructure.model.User;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,10 @@ public class UserMapper {
                 .updatedAt(user.getUpdatedAt())
                 .roles(roles)
                 .permissions(permissions)
+                .hasValidationPin(StringUtils.isNotEmpty(user.getValidationPin()))
                 .build();
     }
-
+ 
     public DomainUser toLightDomain(final User user) {
         if (user == null) return null;
         return DomainUser.builder()
