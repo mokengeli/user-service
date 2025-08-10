@@ -14,6 +14,7 @@ import com.bacos.mokengeli.biloko.infrastructure.repository.TenantRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.TenantUserSequenceRepository;
 import com.bacos.mokengeli.biloko.infrastructure.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -187,7 +188,7 @@ public class UserAdapter implements UserPort {
         User target = this.findUserByEmployeeNumberOrUsername(identifier);
 
         // 2. if existing PIN, verify currentPin
-        if (!byPassOldPinValidation && target.getValidationPin() != null) {
+        if (!byPassOldPinValidation && StringUtils.isNotEmpty(target.getValidationPin())) {
             if (req.getCurrentPin() == null || !encoder.matches(req.getCurrentPin(), target.getValidationPin())) {
                 throw new UserServiceRuntimeException(UUID.randomUUID().toString(), "Current PIN incorrect");
             }
