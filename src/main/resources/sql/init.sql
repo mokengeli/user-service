@@ -7,32 +7,33 @@ SET search_path TO user_schema;
 -- 2) Plans d’abonnement initiaux
 INSERT INTO subscription_plans
     (code, label, monthly_price, features, created_at, updated_at)
-VALUES ('STARTER', 'Starter', 29.99, '{}'::jsonb, NOW(), NOW()),
-       ('PREMIUM', 'Premium', 79.99, '{}'::jsonb, NOW(), NOW());
+VALUES ('STANDARD', 'Standard', 29.99, '{}'::jsonb, NOW(), NOW()),
+       ('PREMIUM', 'Premium', 59.99, '{}'::jsonb, NOW(), NOW()),
+       ('GOLD', 'Premium', 99.99, '{}'::jsonb, NOW(), NOW());
 
 -- 3) Types d’enseigne initiaux
 INSERT INTO establishment_types
     (code, label, description, created_at, updated_at)
 VALUES ('RESTAURANT', 'Restaurant', '', NOW(), NOW()),
-       ('BAR', 'Bar', '', NOW(), NOW()),
-       ('LOUNGE', 'Lounge', '', NOW(), NOW()),
+       ('BAR', 'Bar', 'Bar', NOW(), NOW()),
+       ('LOUNGE', 'Lounge', 'Lounge', NOW(), NOW()),
        ('PLATFORM', 'Platform', 'Tenant interne SaaS', NOW(), NOW());
 
 -- 4) Tenant “Platform” et ses FKs vers plan & type
 INSERT INTO tenants
 (name, code, address, email, establishment_type_id, subscription_plan_id, created_at)
 VALUES ('Mokengeli Biloko Plateform',
-        'mok-bil',
+        'administrateur',
         'xxx',
         'bacos.systemes@gmail.com',
         (SELECT id FROM establishment_types WHERE code = 'PLATFORM'),
         (SELECT id FROM subscription_plans WHERE code = 'PREMIUM'),
-        '2024-09-18');
+        NOW());
 
--- 5) Historique de souscription pour “mok-bil”
+-- 5) Historique de souscription pour “administrateur”
 INSERT INTO subscription_histories
     (tenant_id, subscription_plan_id, start_date, created_at)
-VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
+VALUES ((SELECT id FROM tenants WHERE code = 'administrateur'),
         (SELECT id FROM subscription_plans WHERE code = 'PREMIUM'),
         NOW(),
         NOW());
@@ -40,7 +41,7 @@ VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
 -- 6) Initialisation de la séquence de numéros d’employé
 INSERT INTO tenant_user_sequence
     (tenant_id, last_value)
-VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
+VALUES ((SELECT id FROM tenants WHERE code = 'administrateur'),
         0);
 
 -- 7) Création de l’utilisateur administrateur “Emmanuel B”
@@ -58,16 +59,16 @@ INSERT INTO users
  status,
  created_at,
  updated_at)
-VALUES ((SELECT id FROM tenants WHERE code = 'mok-bil'),
-        'Emmanuel',
-        'Bala',
+VALUES ((SELECT id FROM tenants WHERE code = 'administrateur'),
+        'Administrateur',
+        'Admin',
         NULL,
-        'mokaBil',
+        'admin',
         NULL,
-        'mok-bil',
+        'admin-plateform',
         '$2a$10$zgdZgS9BAYe7B0NrUZkg8eUItX.ik54oR7jaM23iVboM3gbnT4D0C',
         'ACTIVE',
-        '2025-04-18 00:00:00',
+        NOW(),
         NULL);
 
 
@@ -174,7 +175,7 @@ VALUES
 
 INSERT INTO users_roles (role_id, user_id)
 VALUES ((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
-        (SELECT id FROM users WHERE employee_number = 'mok-bil'));
+        (SELECT id FROM users WHERE employee_number = 'admin-plateform'));
 
 
 INSERT INTO session_limits(app_type, max_sessions)
