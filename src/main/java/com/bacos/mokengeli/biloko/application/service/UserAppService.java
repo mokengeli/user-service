@@ -44,6 +44,9 @@ public class UserAppService {
         if (roles.contains(ROLE_COOK.name())) {
             return ROLE_COOK;
         }
+        if (roles.contains(ROLE_CASHIER.name())) {
+            return ROLE_CASHIER;
+        }
         throw new IllegalArgumentException("Role not authorized");
     }
 
