@@ -5,6 +5,7 @@ public enum RoleEnum {
     ROLE_USER("Utilisateur standard"),
     ROLE_MANAGER("Responsable du lounge/restaurant"),
     ROLE_SERVER("Serveur dans le lounge/restaurant"),
+    ROLE_CASHIER("Caisier dans le lounge/restaurant"),
     ROLE_COOK("Cuisinier dans le lounge/restaurant");
 
 
