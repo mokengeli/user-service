@@ -54,7 +54,8 @@ public class UserService {
 
 
     public DomainUser getUserByEmployeeNumber(String employeeNumber) throws ServiceException {
-        String employeeNumberOfConnectedUser = this.userAppService.getConnectedUser().getEmployeeNumber();
+        ConnectedUser connectedUser = this.userAppService.getConnectedUser();
+        String employeeNumberOfConnectedUser = connectedUser.getEmployeeNumber();
 
         if (employeeNumber == null) {
             String uuid = UUID.randomUUID().toString();
@@ -64,7 +65,14 @@ public class UserService {
         }
         Optional<DomainUser> optUser = this.userPort.getUserByEmployeeNumber(employeeNumber);
         if (optUser.isPresent()) {
-            return optUser.get();
+            DomainUser domainUser = optUser.get();
+            if (!userAppService.isAdminUser() && !connectedUser.getTenantCode().equals(domainUser.getTenantCode())) {
+                String id = UUID.randomUUID().toString();
+                log.error("[{}]: User [{}] tried to list users for tenant [{}]", id, connectedUser.getEmployeeNumber(),
+                        domainUser.getTenantCode());
+                throw new ServiceException(id, "Vous n'avez pas le droit d'effectuer cette action");
+            }
+            return domainUser;
         }
         String uuid = UUID.randomUUID().toString();
         log.error("[{}]: User [{}]. No User  found with employee number {}",
@@ -73,9 +81,17 @@ public class UserService {
     }
 
     public DomainUser getUserByIdentifier(String identifier) throws ServiceException {
+
         Optional<DomainUser> optUser = this.userPort.getUserByIdentifier(identifier);
         if (optUser.isPresent()) {
-            return optUser.get();
+            DomainUser domainUser = optUser.get();
+            ConnectedUser user = userAppService.getConnectedUser();
+            if (!userAppService.isAdminUser() && !user.getTenantCode().equals(domainUser.getTenantCode())) {
+                String id = UUID.randomUUID().toString();
+                log.error("[{}]: User [{}] tried to list users for tenant [{}]", id, user.getEmployeeNumber(), domainUser.getTenantCode());
+                throw new ServiceException(id, "Vous n'avez pas le droit d'effectuer cette action");
+            }
+            return domainUser;
         }
         String uuid = UUID.randomUUID().toString();
         log.error("[{}]:  No User  found with employee number {}",
@@ -88,7 +104,7 @@ public class UserService {
         if (!userAppService.isAdminUser() && !user.getTenantCode().equals(tenantCode)) {
             String id = UUID.randomUUID().toString();
             log.error("[{}]: User [{}] tried to list users for tenant [{}]", id, user.getEmployeeNumber(), tenantCode);
-            throw new ServiceException(id, "Forbidden");
+            throw new ServiceException(id, "Vous n'avez pas le droit d'effectuer cette action");
         }
         return userPort.findAllUsersByTenant(tenantCode, page, size, search);
     }
