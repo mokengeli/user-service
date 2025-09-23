@@ -7,9 +7,9 @@ SET search_path TO user_schema;
 -- 2) Plans d’abonnement initiaux
 INSERT INTO subscription_plans
     (code, label, monthly_price, features, created_at, updated_at)
-VALUES ('STANDARD', 'Standard', 29.99, '{}'::jsonb, NOW(), NOW()),
+VALUES ('STARTER', 'Starter', 29.99, '{}'::jsonb, NOW(), NOW()),
        ('PREMIUM', 'Premium', 59.99, '{}'::jsonb, NOW(), NOW()),
-       ('GOLD', 'Premium', 99.99, '{}'::jsonb, NOW(), NOW());
+       ('GOLD', 'Gold', 99.99, '{}'::jsonb, NOW(), NOW());
 
 -- 3) Types d’enseigne initiaux
 INSERT INTO establishment_types
