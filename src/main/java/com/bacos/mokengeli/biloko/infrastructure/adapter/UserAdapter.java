@@ -207,4 +207,14 @@ public class UserAdapter implements UserPort {
         // 5. optional audit or notification
         return new UpdateUserPinResponse("PIN updated successfully");
     }
+
+    @Override
+    public DomainUser updateUserPwd(String identifier, String encodedPwd) {
+        // 1. determine target user
+        User user = this.findUserByEmployeeNumberOrUsername(identifier);
+        user.setPassword(encodedPwd);
+        user.setUpdatedAt(OffsetDateTime.now());
+        User save = userRepository.save(user);
+        return UserMapper.toDomain(save);
+    }
 }

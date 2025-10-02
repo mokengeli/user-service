@@ -29,4 +29,5 @@ public interface UserPort {
 
     UpdateUserPinResponse updateUserPin(String  identifier, UpdateUserPinRequest request, boolean byPassOldPinValidation );
 
+    DomainUser updateUserPwd(String employeeNumber, String encodedPwd);
 }

@@ -11,8 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
 
 /**
  * Service pour gérer l'envoi de notifications (emails).
@@ -98,26 +102,34 @@ public class NotificationService {
      * @param tenantCode Code du restaurant
      * @param userEmail  Email de l'utilisateur
      * @param firstName  Prénom
-     * @param resetUrl   URL de réinitialisation
+     * @param lastName   Nom
      */
     public void sendPasswordResetEmail(
             String tenantCode,
             String userEmail,
             String firstName,
-            String resetUrl
+            String lastName
     ) {
         try {
             log.debug("Sending password reset email to {}", userEmail);
+            // Format : "2 octobre 2025 à 11h39"
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+                    "dd/MM/yyyy 'à' HH:mm",
+                    Locale.FRENCH
+            );
+            String changeDate = OffsetDateTime.now().format(formatter);
 
             SendEmailRequest request = SendEmailRequest.builder()
-                    .templateCode("PASSWORD_RESET")
+                    .templateCode(TemplateCodeEnum.PASSWORD_CHANGED.name())
                     .tenantCode(tenantCode)
                     .recipients(List.of(userEmail))
                     .variables(Map.of(
                             "firstName", firstName,
-                            "resetUrl", resetUrl
+                            "lastName", lastName,
+                            "loginUrl", loginUrl,
+                            "changeDate", changeDate
                     ))
-                    .priority("URGENT")
+                    .priority(EmailPriorityEnum.URGENT.name())
                     .build();
 
             EmailResponse response = emailServiceClient.sendEmail(request).getBody();

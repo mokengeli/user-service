@@ -127,4 +127,11 @@ public class UserController {
                     HttpStatus.BAD_REQUEST, e.getMessage(), e.getTechnicalId());
         }
     }
+
+    @PutMapping("/pwd")
+    public DomainUser updatePassword(
+            @RequestParam("encodedPwd") String encodedPwd
+    ) {
+        return userService.updatePwd(encodedPwd);
+    }
 }

@@ -217,4 +217,25 @@ public class UserService {
 
         return userPort.updateUserPin(identifier, request, byPassOldPinValidation);
     }
+
+    public DomainUser updatePwd(String encodedPwd) {
+        ConnectedUser user = userAppService.getConnectedUser();
+        String employeeNumber = user.getEmployeeNumber();
+        DomainUser domainUser = userPort.updateUserPwd(employeeNumber, encodedPwd);
+        // Envoyer l'email de bienvenue (asynchrone, ne bloque pas)
+        try {
+            notificationService.sendPasswordResetEmail(
+                    domainUser.getTenantCode(),
+                    domainUser.getEmail(),
+                    domainUser.getFirstName(),
+                    domainUser.getLastName()
+            );
+        } catch (Exception e) {
+            String errorId = UUID.randomUUID().toString();
+            // Log l'erreur mais ne bloque pas la création de l'utilisateur
+            log.warn("[{}]: Failed to send password change email for user {}: {}",
+                    errorId, domainUser.getUserName(), e.getMessage());
+        }
+        return domainUser;
+    }
 }
