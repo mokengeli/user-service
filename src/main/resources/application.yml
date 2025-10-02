@@ -46,5 +46,8 @@ security:
 logging:
   level:
     com.zaxxer.hikari: INFO
+# URL de login (à externaliser)
+app:
+  login-url: preprod.pos.mokengeli-biloko.com/auth/login
 
 

@@ -19,11 +19,13 @@ public class UserService {
 
     private final UserPort userPort;
     private final UserAppService userAppService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public UserService(UserPort userPort, UserAppService userAppService) {
+    public UserService(UserPort userPort, UserAppService userAppService, NotificationService notificationService) {
         this.userPort = userPort;
         this.userAppService = userAppService;
+        this.notificationService = notificationService;
     }
 
     public DomainUser createUser(DomainUser domainUser, String password) throws ServiceException {
@@ -49,7 +51,26 @@ public class UserService {
                     uuid, employeeNumber, role, domainUser.getTenantCode());
             throw new ServiceException(uuid, "You don't have the right to create user for this restaurant");
         }
-        return userPort.createNewUser(domainUser, password);
+        DomainUser createdUser = userPort.createNewUser(domainUser, password);
+        log.info("User created successfully with ID: {}", createdUser.getId());
+// Envoyer l'email de bienvenue (asynchrone, ne bloque pas)
+        try {
+            notificationService.sendAccountCreationEmail(
+                    createdUser.getTenantCode(),
+                    createdUser.getEmail(),
+                    createdUser.getFirstName(),
+                    createdUser.getLastName(),
+                    createdUser.getEmployeeNumber(),
+                    createdUser.getUserName()
+            );
+        } catch (Exception e) {
+            String errorId = UUID.randomUUID().toString();
+            // Log l'erreur mais ne bloque pas la création de l'utilisateur
+            log.warn("[{}]: Failed to send account creation email for user {}: {}",
+                    errorId, createdUser.getUserName(), e.getMessage());
+        }
+        return createdUser;
+
     }
 
 

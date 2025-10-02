@@ -45,3 +45,6 @@ security:
   jwt:
     secret: ${JWT_SECRET}
     is-ssl: ${IS_SSL:false}
+# URL de login (à externaliser)
+app:
+  login-url: ${LOGIN_URL:https://pos.mokengeli-biloko.com/auth/login}
