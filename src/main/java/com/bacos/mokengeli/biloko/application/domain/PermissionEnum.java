@@ -5,7 +5,8 @@ public enum PermissionEnum {
     VIEW_INVENTORY("Permission de visualiser les stocks"),
     EDIT_INVENTORY("Permission de modifier les stocks"),
     DELETE_ORDER("Permission de supprimer des commandes"),
-    VIEW_REPORTS("Permission de visualiser les rapports");
+    VIEW_REPORTS("Permission de visualiser les rapports"),
+    MANAGE_TENANT_ADDONS("Permission de gérer les addons du tenant");
 
     private final String description;
 

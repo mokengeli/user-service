@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmployeeNumber(String employeeNumber);
 
+    User findByEmployeeNumberAndTenant_Code(String employeeNumber, String tenantCode);
+
     Page<User> findByTenantCode(String tenantCode, Pageable pageable);
 
     @Query("""
