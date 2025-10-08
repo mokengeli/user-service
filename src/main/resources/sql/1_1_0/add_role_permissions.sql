@@ -47,3 +47,43 @@ VALUES((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
 INSERT INTO roles_permissions (role_id, permission_id)
 VALUES((SELECT id FROM roles WHERE label = 'ROLE_ADMIN'),
        (SELECT id FROM permissions WHERE label = 'CREATE_MENU_CATEGORY'));
+
+--INSERT INTO roles_permissions (role_id, permission_id)
+--VALUES((SELECT id FROM roles WHERE label = 'ROLE_MANAGER'),
+  --     (SELECT id FROM permissions WHERE label = 'EDIT_MENU_CATEGORY'));
+--
+INSERT INTO roles (label, description, created_at)
+VALUES ('ROLE_INVENTORY_MANAGER', 'Gestionnaire d''inventaire', CURRENT_TIMESTAMP);
+
+INSERT INTO roles_permissions (role_id, permission_id)
+VALUES((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'VIEW_INVENTORY')),
+     -- ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+      -- (SELECT id FROM permissions WHERE label = 'CREATE_CATEGORY_INVENTORY')),
+      --((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       --(SELECT id FROM permissions WHERE label = 'EDIT_CATEGORY_INVENTORY')),
+      ----((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       --(SELECT id FROM permissions WHERE label = 'DELETE_CATEGORY_INVENTORY')),
+      ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'EDIT_INVENTORY')),
+      ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'DELETE_ITEM_INVENTORY')),
+      ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'VIEW_ALL_CATEGORY_MENU')),
+      --((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+      -- (SELECT id FROM permissions WHERE label = 'CREATE_MENU_CATEGORY')),
+     -- ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+     --  (SELECT id FROM permissions WHERE label = 'EDIT_MENU_CATEGORY')),
+      -- ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       -- (SELECT id FROM permissions WHERE label = 'DELETE_MENU_CATEGORY')),
+      ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'ASSIGN_MENU_CATEGORY')),
+      ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'CREATE_DISH')),
+      ((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'DELETE_DISH'));
+
+
+DELETE FROM roles_permissions
+WHERE role_id = (SELECT id FROM roles WHERE label = 'ROLE_MANAGER')
+  AND permission_id = (SELECT id FROM permissions WHERE label = 'EDIT_INVENTORY');
