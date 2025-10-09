@@ -6,7 +6,8 @@ public enum RoleEnum {
     ROLE_MANAGER("Responsable du lounge/restaurant"),
     ROLE_SERVER("Serveur dans le lounge/restaurant"),
     ROLE_CASHIER("Caisier dans le lounge/restaurant"),
-    ROLE_COOK("Cuisinier dans le lounge/restaurant");
+    ROLE_COOK("Cuisinier dans le lounge/restaurant"),
+    ROLE_INVENTORY_MANAGER("Gestionnaire d'inventaire");
 
 
     private final String label;
