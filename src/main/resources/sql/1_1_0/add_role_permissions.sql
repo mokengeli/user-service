@@ -87,3 +87,10 @@ VALUES((SELECT id FROM roles WHERE label = 'ROLE_INVENTORY_MANAGER'),
 DELETE FROM roles_permissions
 WHERE role_id = (SELECT id FROM roles WHERE label = 'ROLE_MANAGER')
   AND permission_id = (SELECT id FROM permissions WHERE label = 'EDIT_INVENTORY');
+
+INSERT INTO roles_permissions (role_id, permission_id)
+VALUES
+    ((SELECT id FROM roles WHERE label = 'ROLE_SERVER'),
+     (SELECT id FROM permissions WHERE label = 'CREATE_ORDER')),
+    ((SELECT id FROM roles WHERE label = 'ROLE_MANAGER'),
+     (SELECT id FROM permissions WHERE label = 'CREATE_ORDER'));
