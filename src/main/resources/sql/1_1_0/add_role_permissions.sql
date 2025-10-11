@@ -94,3 +94,7 @@ VALUES
      (SELECT id FROM permissions WHERE label = 'CREATE_ORDER')),
     ((SELECT id FROM roles WHERE label = 'ROLE_MANAGER'),
      (SELECT id FROM permissions WHERE label = 'CREATE_ORDER'));
+
+INSERT INTO roles_permissions (role_id, permission_id)
+VALUES((SELECT id FROM roles WHERE label = 'ROLE_MANAGER'),
+       (SELECT id FROM permissions WHERE label = 'REMOVE_INVENTORY'));
